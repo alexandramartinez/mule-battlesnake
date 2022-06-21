@@ -1,6 +1,8 @@
 %dw 2.0
 output application/json
 
+// to run with ngrok - ngrok http 8081
+
 var body = payload.you.body
 var board = payload.board
 var head = body[0] // First body part is always head

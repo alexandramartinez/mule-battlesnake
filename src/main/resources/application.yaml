@@ -1,8 +1,8 @@
 battlesnake:
   config:
     "apiversion": "1"
-    "author": "mmsonline"
-    "color" : "#888888"
-    "head" : "default"
-    "tail" : "default"
+    "author": "alexandramartinez"
+    "color" : "#04A5DD"
+    "head" : "iguana"
+    "tail" : "iguana"
     "version" : "0.0.1-beta"
