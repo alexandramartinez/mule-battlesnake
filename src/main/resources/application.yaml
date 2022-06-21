@@ -2,7 +2,7 @@ battlesnake:
   config:
     "apiversion": "1"
     "author": "alexandramartinez"
-    "color" : "#04A5DD"
+    "color" : "#00A0DF"
     "head" : "iguana"
     "tail" : "iguana"
     "version" : "0.0.1-beta"
