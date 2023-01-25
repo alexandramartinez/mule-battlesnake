@@ -1,11 +1,13 @@
 %dw 2.0
 output application/json
 
-// to run with ngrok - ngrok http 8081
+// to run with ngrok - ngrok http 8081 
 
 var body = payload.you.body
 var board = payload.board
-var head = body[0] // First body part is always head
+var boardWidth = board.width - 1
+var boardHeight = board.height - 1
+var head = payload.you.head
 var neck = body[1] // Second body part is always neck
 
 var moves = ["up", "down", "left", "right"]
@@ -21,6 +23,17 @@ var myNeckLocation = neck match {
 
 // TODO: Step 1 - Don't hit walls.
 // Use information from `board` and `head` to not move beyond the game board.
+var wallsLocationY = head match {
+    case head if head.y == 0 -> "down"
+    case head if head.y == boardWidth -> "up"
+    else -> ''
+}
+
+var wallsLocationX = head match {
+    case head if head.x == 0 -> "left"
+    case head if head.x == boardHeight -> "right"
+    else -> ''
+}
 
 // TODO: Step 2 - Don't hit yourself.
 // Use information from `body` to avoid moves that would collide with yourself.
@@ -34,7 +47,7 @@ var myNeckLocation = neck match {
 
 
 // Find safe moves by eliminating neck location and any other locations computed in above steps
-var safeMoves = moves - myNeckLocation // - remove other dangerous locations
+var safeMoves = moves - myNeckLocation - wallsLocationY - wallsLocationX
 
 // Next random move from safe moves
 var nextMove = safeMoves[randomInt(sizeOf(safeMoves))]
