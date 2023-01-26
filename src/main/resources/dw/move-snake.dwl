@@ -3,6 +3,34 @@ output application/json
 
 // to run with ngrok - ngrok http 8081 
 
+type Coordinates = {
+	x: Number,
+	y: Number
+}
+
+type Moves = "up" | "down" | "left" | "right"
+
+fun getCoordinates(initial: Coordinates, direction: Moves): Coordinates = 
+	direction match {
+		case "down" -> {
+			x: initial.x,
+			y: initial.y - 1
+		}
+		case "up" -> {
+			x: initial.x,
+			y: initial.y + 1
+		}
+		case "left" -> {
+			x: initial.x - 1,
+			y: initial.y
+		}
+		case "right" -> {
+			x: initial.x + 1,
+			y: initial.y
+		}
+		else -> initial
+	}
+
 var body = payload.you.body
 var board = payload.board
 var boardWidth = board.width - 1
@@ -13,13 +41,13 @@ var neck = body[1] // Second body part is always neck
 var moves = ["up", "down", "left", "right"]
 
 // Step 0: Find my neck location so I don't eat myself
-var myNeckLocation = neck match {
+/*var myNeckLocation = neck match {
 	case neck if neck.x < head.x -> "left" //my neck is on the left of my head
 	case neck if neck.x > head.x -> "right" //my neck is on the right of my head
 	case neck if neck.y < head.y -> "down" //my neck is below my head
 	case neck if neck.y > head.y -> "up"	//my neck is above my head
 	else -> ''
-}
+}*/
 
 // TODO: Step 1 - Don't hit walls.
 // Use information from `board` and `head` to not move beyond the game board.
@@ -37,6 +65,12 @@ var wallsLocationX = head match {
 
 // TODO: Step 2 - Don't hit yourself.
 // Use information from `body` to avoid moves that would collide with yourself.
+var myBodyLocations = moves map (move) -> do {
+	var newCoordinate = getCoordinates(head, move)
+	---
+	if (body contains newCoordinate) move
+	else ''
+}
 
 // TODO: Step 3 - Don't collide with others.
 // Use information from `payload` to prevent your Battlesnake from colliding with others.
@@ -45,12 +79,11 @@ var wallsLocationX = head match {
 // Use information in `payload` to seek out and find food.
 // food = board.food
 
-
 // Find safe moves by eliminating neck location and any other locations computed in above steps
-var safeMoves = moves - myNeckLocation - wallsLocationY - wallsLocationX
+var safeMoves = moves - wallsLocationY - wallsLocationX -- myBodyLocations
 
 // Next random move from safe moves
-var nextMove = safeMoves[randomInt(sizeOf(safeMoves))]
+var nextMove = safeMoves[randomInt(sizeOf(safeMoves))] default 'up'
 
 ---
 {
