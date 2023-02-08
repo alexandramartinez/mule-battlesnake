@@ -1,14 +1,26 @@
 %dw 2.0
-output application/json
+import mapLeafValues from dw::util::Tree
+import some, every from dw::core::Arrays
 
-// to run with ngrok - ngrok http 8081 
+output application/json
 
 type Coordinates = {
 	x: Number,
 	y: Number
 }
-
 type Moves = "up" | "down" | "left" | "right"
+type Body = Array<Coordinates>
+
+var body = payload.you.body
+var board = payload.board
+var boardWidth = board.width - 1
+var boardHeight = board.height - 1
+var head = payload.you.head
+var food = board.food
+
+var moves = ["up", "down", "left", "right"]
+var defaultMove = 'up'
+var defaultMaxIterations = 1
 
 fun getCoordinates(initial: Coordinates, direction: Moves): Coordinates = 
 	direction match {
@@ -30,63 +42,84 @@ fun getCoordinates(initial: Coordinates, direction: Moves): Coordinates =
 		}
 		else -> initial
 	}
-
-var body = payload.you.body
-var board = payload.board
-var boardWidth = board.width - 1
-var boardHeight = board.height - 1
-var head = payload.you.head
-var neck = body[1] // Second body part is always neck
-
-var moves = ["up", "down", "left", "right"]
-
-// Step 0: Find my neck location so I don't eat myself
-/*var myNeckLocation = neck match {
-	case neck if neck.x < head.x -> "left" //my neck is on the left of my head
-	case neck if neck.x > head.x -> "right" //my neck is on the right of my head
-	case neck if neck.y < head.y -> "down" //my neck is below my head
-	case neck if neck.y > head.y -> "up"	//my neck is above my head
-	else -> ''
-}*/
-
-// TODO: Step 1 - Don't hit walls.
-// Use information from `board` and `head` to not move beyond the game board.
-var wallsLocationY = head match {
-    case head if head.y == 0 -> "down"
-    case head if head.y == boardWidth -> "up"
-    else -> ''
-}
-
-var wallsLocationX = head match {
-    case head if head.x == 0 -> "left"
-    case head if head.x == boardHeight -> "right"
-    else -> ''
-}
-
-// TODO: Step 2 - Don't hit yourself.
-// Use information from `body` to avoid moves that would collide with yourself.
-var myBodyLocations = moves map (move) -> do {
-	var newCoordinate = getCoordinates(head, move)
+fun getSafeMoves(body:Body, availableMoves:Array<Moves> = moves): Array = do {
+	var head:Coordinates = body[0]
+	var wallsLocations = [
+		('down') if head.y == 0,
+		('up') if head.y == boardWidth,
+		('left') if head.x == 0,
+		('right') if head.x == boardHeight
+	]
+	var myBodyLocations = availableMoves map (move) -> do {
+		var newCoordinate = getCoordinates(head, move)
+		---
+		if (body contains newCoordinate) move
+		else ''
+	}
 	---
-	if (body contains newCoordinate) move
-	else ''
+	availableMoves -- wallsLocations -- myBodyLocations
 }
-
+fun getBestNextMovesFrom(body:Body, availableMoves:Array, maxIterations=defaultMaxIterations) = do {
+	(availableMoves map (safeMove) -> do {
+		var newBody = getCoordinates(body[0], safeMove) >> body[0 to -2]
+		var newSafeMoves = getSafeMoves(newBody)
+		---
+		{
+			move: safeMove,
+			// newBody: newBody,
+			futureAvailableMoves: if (maxIterations != 0)
+					getBestNextMovesFrom(newBody, newSafeMoves, maxIterations-1)
+				else newSafeMoves,
+			size: sizeOf(newSafeMoves)
+		}
+	}) map {
+		move: $.move,
+		size: flatten($..size) then sum($) // NOTE: flatten should not be necessary
+	}
+	orderBy -$.size //then $[0].move
+	// filter ($.size > 1) //then $.move // NOTE: why is this changing the size????
+}
+fun whichDirections(c1:Coordinates, c2:Coordinates):Array = do {
+	var xDistance = c1.x - c2.x
+    var yDistance = c1.y - c2.y
+	---
+	[
+		('left') if (xDistance >= 1),
+		('right') if (xDistance <= -1),
+		('down') if (yDistance >= 1),
+		('up') if (yDistance <= -1)
+	]
+}
+fun getClosestFood(head:Coordinates, food:Array<Coordinates>) = do {
+	food map {
+		($),
+		distance: abs(head.x - $.x) + abs(head.y - $.y),
+		moves: head whichDirections $
+	} orderBy $.distance
+}
 // TODO: Step 3 - Don't collide with others.
 // Use information from `payload` to prevent your Battlesnake from colliding with others.
 
-// TODO: Step 4 - Find food.
-// Use information in `payload` to seek out and find food.
-// food = board.food
-
-// Find safe moves by eliminating neck location and any other locations computed in above steps
-var safeMoves = moves - wallsLocationY - wallsLocationX -- myBodyLocations
-
-// Next random move from safe moves
-var nextMove = safeMoves[randomInt(sizeOf(safeMoves))] default 'up'
-
+var closestFood = head getClosestFood food
+var safeMoves = do {
+	var sm = body getSafeMoves moves // avoid walls and own body
+	var size = sizeOf(sm)
+	---
+	if (size < 1) [defaultMove]
+	else if (size == 1) sm
+	else if (size == 2) (body getBestNextMovesFrom sm).move
+	else (sm filter (closestFood[0].moves contains $)) // get closest food move?
+	// TODO: fix this to also do bestnextmoves 
+}
+var nextMove = safeMoves[0]
 ---
 {
 	move: nextMove,
-	shout: "Moving $(nextMove)"
+	// shout: "Moving $(nextMove)",
+	safeMoves: safeMoves,
+	// closestFood: closestFood
+	// getBestNextMovesFrom: getBestNextMovesFrom(body, safeMoves),
+	// food: (head getClosestFood food)[1].moves
+	//filter ((food) -> safeMoves some (food.moves contains $))
+	//filter (safeMoves some contains($.moves))
 }
