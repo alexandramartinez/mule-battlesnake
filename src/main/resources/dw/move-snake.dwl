@@ -20,7 +20,7 @@ var food = board.food
 
 var moves = ["up", "down", "left", "right"]
 var defaultMove = 'up'
-var defaultMaxIterations = 1
+var defaultMaxIterations = 5
 
 fun getCoordinates(initial: Coordinates, direction: Moves): Coordinates = 
 	direction match {
@@ -67,7 +67,7 @@ fun getBestNextMovesFrom(body:Body, availableMoves:Array, maxIterations=defaultM
 		{
 			move: safeMove,
 			// newBody: newBody,
-			futureAvailableMoves: if (maxIterations != 0)
+			futureAvailableMoves: if (maxIterations != 1)
 					getBestNextMovesFrom(newBody, newSafeMoves, maxIterations-1)
 				else newSafeMoves,
 			size: sizeOf(newSafeMoves)
@@ -76,8 +76,8 @@ fun getBestNextMovesFrom(body:Body, availableMoves:Array, maxIterations=defaultM
 		move: $.move,
 		size: flatten($..size) then sum($) // NOTE: flatten should not be necessary
 	}
-	orderBy -$.size //then $[0].move
-	// filter ($.size > 1) //then $.move // NOTE: why is this changing the size????
+	orderBy -$.size
+	// filter ($.size > 1) // NOTE: why is this changing the size????
 }
 fun whichDirections(c1:Coordinates, c2:Coordinates):Array = do {
 	var xDistance = c1.x - c2.x
@@ -95,7 +95,9 @@ fun getClosestFood(head:Coordinates, food:Array<Coordinates>) = do {
 		($),
 		distance: abs(head.x - $.x) + abs(head.y - $.y),
 		moves: head whichDirections $
-	} orderBy $.distance
+	} 
+	orderBy $.distance
+	distinctBy $.moves
 }
 // TODO: Step 3 - Don't collide with others.
 // Use information from `payload` to prevent your Battlesnake from colliding with others.
@@ -104,20 +106,24 @@ var closestFood = head getClosestFood food
 var safeMoves = do {
 	var sm = body getSafeMoves moves // avoid walls and own body
 	var size = sizeOf(sm)
+	@Lazy
+	var bestNextMoves = (body getBestNextMovesFrom sm) 
+	var filteredBestNextMoves = (bestNextMoves filter ($.size > 1)) // NOTE: this filter is a workaround. should be in the getBestNextMovesFrom function
+		then if (isEmpty($)) bestNextMoves.move else $.move
 	---
 	if (size < 1) [defaultMove]
 	else if (size == 1) sm
-	else if (size == 2) (body getBestNextMovesFrom sm).move
-	else (sm filter (closestFood[0].moves contains $)) // get closest food move?
-	// TODO: fix this to also do bestnextmoves 
+	else if (size == 2) filteredBestNextMoves
+	else flatten(closestFood.moves map ($ -- (moves -- bestNextMoves)))
+	// TODO: check if the order can be improved to follow bestNextMoves
 }
-var nextMove = safeMoves[0]
+var nextMove = safeMoves[0] default defaultMove
 ---
 {
 	move: nextMove,
 	// shout: "Moving $(nextMove)",
 	safeMoves: safeMoves,
-	// closestFood: closestFood
+	// closestFood: closestFood,
 	// getBestNextMovesFrom: getBestNextMovesFrom(body, safeMoves),
 	// food: (head getClosestFood food)[1].moves
 	//filter ((food) -> safeMoves some (food.moves contains $))
