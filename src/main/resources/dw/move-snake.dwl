@@ -108,13 +108,13 @@ var safeMoves = do {
 	var size = sizeOf(sm)
 	@Lazy
 	var bestNextMoves = (body getBestNextMovesFrom sm) 
-	var filteredBestNextMoves = (bestNextMoves filter ($.size > 1)) // NOTE: this filter is a workaround. should be in the getBestNextMovesFrom function
-		then if (isEmpty($)) bestNextMoves.move else $.move
+	var filteredBestNextMoves = ((bestNextMoves filter ($.size > 1)) // NOTE: this filter is a workaround. should be in the getBestNextMovesFrom function
+		then if (isEmpty($)) bestNextMoves else $).move
 	---
 	if (size < 1) [defaultMove]
 	else if (size == 1) sm
-	else if (size == 2) filteredBestNextMoves
-	else flatten(closestFood.moves map ($ -- (moves -- bestNextMoves)))
+	else if (size == 2) filteredBestNextMoves // NOTE FOR NEXT STREAM: FIXED THE ISSUE BY REPLACING...
+	else flatten(closestFood.moves map ($ -- (moves -- filteredBestNextMoves))) // ...bestNextMoves with filteredBestNextMoves *facepalm*
 	// TODO: check if the order can be improved to follow bestNextMoves
 }
 var nextMove = safeMoves[0] default defaultMove
