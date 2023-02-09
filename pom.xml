@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.javastreets</groupId>
+	<groupId>ca.alexmartinez</groupId>
 	<artifactId>mule-battlesnake</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>0.3</version>
 	<packaging>mule-application</packaging>
 
 	<name>mule-battlesnake</name>
@@ -15,7 +15,7 @@
 		<app.runtime>4.4.0</app.runtime>
 		<mule.maven.plugin.version>3.8.0</mule.maven.plugin.version>
 		<!-- Define CH app prefix to be unique before deploying to CH -->
-		<cloudhub.app.prefix>mms</cloudhub.app.prefix>
+		<cloudhub.app.prefix>amartinez</cloudhub.app.prefix>
 		<region>us-east-1</region>
 		<workers>1</workers>
 		<workerType>MICRO</workerType>
