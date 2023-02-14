@@ -20,7 +20,7 @@
 		<workers>1</workers>
 		<workerType>MICRO</workerType>
 		<environment>Sandbox</environment>
-		<munit.version>2.3.13</munit.version>
+		<munit.version>2.3.15</munit.version>
 	</properties>
 
 	<build>
@@ -100,14 +100,14 @@
 		<dependency>
 			<groupId>com.mulesoft.munit</groupId>
 			<artifactId>munit-runner</artifactId>
-			<version>2.3.13</version>
+			<version>${munit.version}</version>
 			<classifier>mule-plugin</classifier>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.mulesoft.munit</groupId>
 			<artifactId>munit-tools</artifactId>
-			<version>2.3.13</version>
+			<version>${munit.version}</version>
 			<classifier>mule-plugin</classifier>
 			<scope>test</scope>
 		</dependency>
