@@ -20,7 +20,7 @@ var food = board.food
 
 var moves = ["up", "down", "left", "right"]
 var defaultMove = 'up'
-var defaultMaxIterations = 5
+var defaultMaxIterations = 7
 
 fun getCoordinates(initial: Coordinates, direction: Moves): Coordinates = 
 	direction match {
@@ -78,7 +78,7 @@ fun getBestNextMovesFrom(body:Body, availableMoves:Array, maxIterations=defaultM
 	}
 	orderBy -$.size
 	// filter ($.size > 1) // NOTE: why is this changing the size????
-}
+} 
 fun whichDirections(c1:Coordinates, c2:Coordinates):Array = do {
 	var xDistance = c1.x - c2.x
     var yDistance = c1.y - c2.y
@@ -108,14 +108,22 @@ var safeMoves = do {
 	var size = sizeOf(sm)
 	@Lazy
 	var bestNextMoves = (body getBestNextMovesFrom sm) 
-	var filteredBestNextMoves = ((bestNextMoves filter ($.size > 1)) // NOTE: this filter is a workaround. should be in the getBestNextMovesFrom function
-		then if (isEmpty($)) bestNextMoves else $).move
+	@Lazy
+	var filteredBestNextMoves = (
+		(bestNextMoves filter ($.size > 1)) // NOTE: this filter is a workaround. should be in the getBestNextMovesFrom function
+		then if (isEmpty($)) bestNextMoves else $
+	).move
+	@Lazy
+	var prioritizedMoves = flatten(closestFood.moves map ($ -- (moves -- filteredBestNextMoves)))
 	---
 	if (size < 1) [defaultMove]
 	else if (size == 1) sm
-	else if (size == 2) filteredBestNextMoves // NOTE FOR NEXT STREAM: FIXED THE ISSUE BY REPLACING...
-	else flatten(closestFood.moves map ($ -- (moves -- filteredBestNextMoves))) // ...bestNextMoves with filteredBestNextMoves *facepalm*
-	// TODO: check if the order can be improved to follow bestNextMoves
+	else if (size == 2) filteredBestNextMoves
+	else 
+	if (isEmpty(prioritizedMoves)) filteredBestNextMoves else prioritizedMoves
+	// TODO: order MUST be improved to follow bestNextMoves' order
+	// TODO: create regression tests.
+	// TODO: create tickets in github instead of creating TODOs here? just sayin
 }
 var nextMove = safeMoves[0] default defaultMove
 ---
