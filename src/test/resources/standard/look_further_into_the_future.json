@@ -1,0 +1,294 @@
+{
+   "game": {
+      "id": "109fe02f-332e-4e9d-887a-5e2feed03ab1",
+      "ruleset": {
+         "name": "standard",
+         "version": "v1.2.3",
+         "settings": {
+            "foodSpawnChance": 15,
+            "minimumFood": 1,
+            "hazardDamagePerTurn": 0,
+            "hazardMap": "",
+            "hazardMapAuthor": "",
+            "royale": {
+               "shrinkEveryNTurns": 0
+            },
+            "squad": {
+               "allowBodyCollisions": false,
+               "sharedElimination": false,
+               "sharedHealth": false,
+               "sharedLength": false
+            }
+         }
+      },
+      "map": "standard",
+      "timeout": 500,
+      "source": "custom"
+   },
+   "turn": 157,
+   "board": {
+      "height": 11,
+      "width": 11,
+      "snakes": [
+         {
+            "id": "gs_kPQRmQ43QmttGkYRQFkDHxGd",
+            "name": "local Maxine",
+            "latency": "95",
+            "health": 90,
+            "body": [
+               {
+                  "x": 7,
+                  "y": 10
+               },
+               {
+                  "x": 7,
+                  "y": 9
+               },
+               {
+                  "x": 8,
+                  "y": 9
+               },
+               {
+                  "x": 8,
+                  "y": 8
+               },
+               {
+                  "x": 7,
+                  "y": 8
+               },
+               {
+                  "x": 6,
+                  "y": 8
+               },
+               {
+                  "x": 5,
+                  "y": 8
+               },
+               {
+                  "x": 5,
+                  "y": 9
+               },
+               {
+                  "x": 4,
+                  "y": 9
+               },
+               {
+                  "x": 4,
+                  "y": 8
+               },
+               {
+                  "x": 3,
+                  "y": 8
+               },
+               {
+                  "x": 3,
+                  "y": 7
+               },
+               {
+                  "x": 4,
+                  "y": 7
+               },
+               {
+                  "x": 5,
+                  "y": 7
+               },
+               {
+                  "x": 6,
+                  "y": 7
+               },
+               {
+                  "x": 7,
+                  "y": 7
+               },
+               {
+                  "x": 8,
+                  "y": 7
+               },
+               {
+                  "x": 9,
+                  "y": 7
+               },
+               {
+                  "x": 10,
+                  "y": 7
+               },
+               {
+                  "x": 10,
+                  "y": 6
+               },
+               {
+                  "x": 9,
+                  "y": 6
+               },
+               {
+                  "x": 9,
+                  "y": 5
+               },
+               {
+                  "x": 8,
+                  "y": 5
+               },
+               {
+                  "x": 8,
+                  "y": 4
+               },
+               {
+                  "x": 8,
+                  "y": 3
+               },
+               {
+                  "x": 9,
+                  "y": 3
+               }
+            ],
+            "head": {
+               "x": 7,
+               "y": 10
+            },
+            "length": 26,
+            "shout": "",
+            "squad": "",
+            "customizations": {
+               "color": "#6c25be",
+               "head": "caffeine",
+               "tail": "nr-booster"
+            }
+         }
+      ],
+      "food": [
+         {
+            "x": 0,
+            "y": 0
+         },
+         {
+            "x": 5,
+            "y": 0
+         }
+      ],
+      "hazards": []
+   },
+   "you": {
+      "id": "gs_kPQRmQ43QmttGkYRQFkDHxGd",
+      "name": "local Maxine",
+      "latency": "95",
+      "health": 90,
+      "body": [
+         {
+            "x": 7,
+            "y": 10
+         },
+         {
+            "x": 7,
+            "y": 9
+         },
+         {
+            "x": 8,
+            "y": 9
+         },
+         {
+            "x": 8,
+            "y": 8
+         },
+         {
+            "x": 7,
+            "y": 8
+         },
+         {
+            "x": 6,
+            "y": 8
+         },
+         {
+            "x": 5,
+            "y": 8
+         },
+         {
+            "x": 5,
+            "y": 9
+         },
+         {
+            "x": 4,
+            "y": 9
+         },
+         {
+            "x": 4,
+            "y": 8
+         },
+         {
+            "x": 3,
+            "y": 8
+         },
+         {
+            "x": 3,
+            "y": 7
+         },
+         {
+            "x": 4,
+            "y": 7
+         },
+         {
+            "x": 5,
+            "y": 7
+         },
+         {
+            "x": 6,
+            "y": 7
+         },
+         {
+            "x": 7,
+            "y": 7
+         },
+         {
+            "x": 8,
+            "y": 7
+         },
+         {
+            "x": 9,
+            "y": 7
+         },
+         {
+            "x": 10,
+            "y": 7
+         },
+         {
+            "x": 10,
+            "y": 6
+         },
+         {
+            "x": 9,
+            "y": 6
+         },
+         {
+            "x": 9,
+            "y": 5
+         },
+         {
+            "x": 8,
+            "y": 5
+         },
+         {
+            "x": 8,
+            "y": 4
+         },
+         {
+            "x": 8,
+            "y": 3
+         },
+         {
+            "x": 9,
+            "y": 3
+         }
+      ],
+      "head": {
+         "x": 7,
+         "y": 10
+      },
+      "length": 26,
+      "shout": "",
+      "squad": "",
+      "customizations": {
+         "color": "#6c25be",
+         "head": "caffeine",
+         "tail": "nr-booster"
+      }
+   }
+}

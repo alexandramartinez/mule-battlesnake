@@ -99,8 +99,6 @@ fun getClosestFood(head:Coordinates, food:Array<Coordinates>) = do {
 	orderBy $.distance
 	distinctBy $.moves
 }
-// TODO: Step 3 - Don't collide with others.
-// Use information from `payload` to prevent your Battlesnake from colliding with others.
 
 var closestFood = head getClosestFood food
 var safeMoves = do {
@@ -109,10 +107,15 @@ var safeMoves = do {
 	@Lazy
 	var bestNextMoves = (body getBestNextMovesFrom sm) 
 	@Lazy
-	var filteredBestNextMoves = (
-		(bestNextMoves filter ($.size > 1)) // NOTE: this filter is a workaround. should be in the getBestNextMovesFrom function
+	var filteredBestNextMoves = (do {
+		var avgSize = avg(bestNextMoves.size)
+		---
+		if (
+			(bestNextMoves[0].size - bestNextMoves[-1].size) > avgSize
+		) bestNextMoves filter ($.size > avgSize)
+		else (bestNextMoves filter ($.size > 1)) // NOTE: this filter is a workaround. should be in the getBestNextMovesFrom function
 		then if (isEmpty($)) bestNextMoves else $
-	).move
+	}).move
 	@Lazy
 	var prioritizedMoves = flatten(closestFood.moves map ($ -- (moves -- filteredBestNextMoves)))
 	---
@@ -121,9 +124,6 @@ var safeMoves = do {
 	else if (size == 2) filteredBestNextMoves
 	else 
 	if (isEmpty(prioritizedMoves)) filteredBestNextMoves else prioritizedMoves
-	// TODO: order MUST be improved to follow bestNextMoves' order
-	// TODO: create regression tests.
-	// TODO: create tickets in github instead of creating TODOs here? just sayin
 }
 var nextMove = safeMoves[0] default defaultMove
 ---
@@ -131,9 +131,4 @@ var nextMove = safeMoves[0] default defaultMove
 	move: nextMove,
 	// shout: "Moving $(nextMove)",
 	safeMoves: safeMoves,
-	// closestFood: closestFood,
-	// getBestNextMovesFrom: getBestNextMovesFrom(body, safeMoves),
-	// food: (head getClosestFood food)[1].moves
-	//filter ((food) -> safeMoves some (food.moves contains $))
-	//filter (safeMoves some contains($.moves))
 }

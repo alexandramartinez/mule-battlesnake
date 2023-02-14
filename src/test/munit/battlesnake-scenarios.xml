@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<munit:config name="battlesnake-scenarios.xml" />
+	<sub-flow name="battlesnake-scenarios:execute-dw" doc:id="cc4ec027-b294-4a53-b57f-408127dd722f" >
+		<flow-ref doc:name="post/move" doc:id="2b0e1c7e-0bed-4bab-b116-1f0c2ce11291" name="post:\move:application\json:battlesnake-api-config"/>
+	</sub-flow>
+	<munit:test name="battlesnake-scenarios:look-further-into-the-future" doc:id="0f7f1ba3-ab4c-468d-a174-d096cabee9aa" >
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="5701807c-ac95-4b5c-945f-ff13a237ad2c">
+			<munit:payload value="#[output application/json --- readUrl('classpath://standard/look_further_into_the_future.json')]" />
+		</munit:set-event>
+			<flow-ref doc:name="execute-dw" doc:id="f521f77a-2df8-426c-857f-f2fac2dca373" name="battlesnake-scenarios:execute-dw" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="e0ee3990-ebf1-481b-8032-af99b804389a" actual="#[payload.move]" expected="#['left']"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="battlesnake-scenarios:make-better-decisions" doc:id="8eda884a-d382-4bdf-9002-a0c336ec146b" >
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="18584a5e-3845-48fa-863a-730abfa9a064" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://standard/make_better_decisions.json')]" />
+			</munit:set-event>
+			<flow-ref doc:name="execute-dw" doc:id="8fbae8cf-5b66-4072-8c92-07e343539790" name="battlesnake-scenarios:execute-dw"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="55ca94a6-029e-4697-aac2-58b68e3b5b46" actual="#[payload.move]" expected="#['left']" />
+		</munit:validation>
+	</munit:test>
+
+</mule>
