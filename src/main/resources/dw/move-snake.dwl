@@ -11,12 +11,16 @@ type Coordinates = {
 type Moves = "up" | "down" | "left" | "right"
 type Body = Array<Coordinates>
 
+var head = payload.you.head
 var body = payload.you.body
+var length = payload.you.length // to eat snakes later
+
 var board = payload.board
 var boardWidth = board.width - 1
 var boardHeight = board.height - 1
-var head = payload.you.head
 var food = board.food
+var otherSnakes = board.snakes filter ($.id != payload.you.id)
+var otherSnakesBodies = flatten(otherSnakes.body)
 
 var moves = ["up", "down", "left", "right"]
 var defaultMove = 'up'
@@ -56,8 +60,15 @@ fun getSafeMoves(body:Body, availableMoves:Array<Moves> = moves): Array = do {
 		if (body contains newCoordinate) move
 		else ''
 	}
+	var snakes = if (isEmpty(otherSnakesBodies)) []
+		else availableMoves map (move) -> do {
+			var newCoordinate = getCoordinates(head, move)
+			---
+			if (otherSnakesBodies contains newCoordinate) move
+			else ''
+		}
 	---
-	availableMoves -- wallsLocations -- myBodyLocations
+	availableMoves -- wallsLocations -- myBodyLocations -- snakes
 }
 fun getBestNextMovesFrom(body:Body, availableMoves:Array, maxIterations=defaultMaxIterations) = do {
 	(availableMoves map (safeMove) -> do {
@@ -132,3 +143,4 @@ var nextMove = safeMoves[0] default defaultMove
 	// shout: "Moving $(nextMove)",
 	safeMoves: safeMoves,
 }
+// payload.board.snakes - id: payload.you.id
