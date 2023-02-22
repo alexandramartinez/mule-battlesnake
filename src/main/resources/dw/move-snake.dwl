@@ -1,6 +1,5 @@
 %dw 2.0
-import mapLeafValues from dw::util::Tree
-import some, every from dw::core::Arrays
+import drop from dw::core::Arrays
 
 output application/json
 
@@ -13,14 +12,18 @@ type Body = Array<Coordinates>
 
 var head = payload.you.head
 var body = payload.you.body
-var length = payload.you.length // to eat snakes later
+var length = payload.you.length
 
 var board = payload.board
 var boardWidth = board.width - 1
 var boardHeight = board.height - 1
 var food = board.food
 var otherSnakes = board.snakes filter ($.id != payload.you.id)
-var otherSnakesBodies = flatten(otherSnakes.body)
+var otherSnakesBodies = flatten(otherSnakes.body) //flatten(otherSnakes.body map ($ drop 1))
+var otherSnakesHeads = otherSnakes map {
+    ($.head),
+    length: $.length
+}
 
 var moves = ["up", "down", "left", "right"]
 var defaultMove = 'up'
@@ -46,6 +49,19 @@ fun getCoordinates(initial: Coordinates, direction: Moves): Coordinates =
 		}
 		else -> initial
 	}
+fun whichDirections(c1:Coordinates, c2:Coordinates):Array = do {
+	var xDistance = c1.x - c2.x
+    var yDistance = c1.y - c2.y
+	---
+	[
+		('left') if (xDistance >= 1),
+		('right') if (xDistance <= -1),
+		('down') if (yDistance >= 1),
+		('up') if (yDistance <= -1)
+	]
+}
+fun getDistance(c1:Coordinates, c2:Coordinates):Number =
+	abs(c1.x - c2.x) + abs(c1.y - c2.y)
 fun getSafeMoves(body:Body, availableMoves:Array<Moves> = moves): Array = do {
 	var head:Coordinates = body[0]
 	var wallsLocations = [
@@ -60,7 +76,7 @@ fun getSafeMoves(body:Body, availableMoves:Array<Moves> = moves): Array = do {
 		if (body contains newCoordinate) move
 		else ''
 	}
-	var snakes = if (isEmpty(otherSnakesBodies)) []
+	var snakesBodies = if (isEmpty(otherSnakesBodies)) []
 		else availableMoves map (move) -> do {
 			var newCoordinate = getCoordinates(head, move)
 			---
@@ -68,7 +84,8 @@ fun getSafeMoves(body:Body, availableMoves:Array<Moves> = moves): Array = do {
 			else ''
 		}
 	---
-	availableMoves -- wallsLocations -- myBodyLocations -- snakes
+	availableMoves -- wallsLocations -- myBodyLocations -- snakesBodies
+
 }
 fun getBestNextMovesFrom(body:Body, availableMoves:Array, maxIterations=defaultMaxIterations) = do {
 	(availableMoves map (safeMove) -> do {
@@ -90,30 +107,26 @@ fun getBestNextMovesFrom(body:Body, availableMoves:Array, maxIterations=defaultM
 	orderBy -$.size
 	// filter ($.size > 1) // NOTE: why is this changing the size????
 } 
-fun whichDirections(c1:Coordinates, c2:Coordinates):Array = do {
-	var xDistance = c1.x - c2.x
-    var yDistance = c1.y - c2.y
-	---
-	[
-		('left') if (xDistance >= 1),
-		('right') if (xDistance <= -1),
-		('down') if (yDistance >= 1),
-		('up') if (yDistance <= -1)
-	]
-}
 fun getClosestFood(head:Coordinates, food:Array<Coordinates>) = do {
 	food map {
 		($),
-		distance: abs(head.x - $.x) + abs(head.y - $.y),
+		distance: head getDistance $,
 		moves: head whichDirections $
 	} 
 	orderBy $.distance
 	distinctBy $.moves
 }
 
+var snakesHeads = otherSnakesHeads map {
+		($),
+		distance: head getDistance $,
+		directions: head whichDirections $
+	} filter ($.distance <= 2 and $.length >= length)
+	then flatten($.directions)
+	then $ default []
 var closestFood = head getClosestFood food
 var safeMoves = do {
-	var sm = body getSafeMoves moves // avoid walls and own body
+	var sm = getSafeMoves(body, moves) //-- snakesHeads
 	var size = sizeOf(sm)
 	@Lazy
 	var bestNextMoves = (body getBestNextMovesFrom sm) 
@@ -139,8 +152,7 @@ var safeMoves = do {
 var nextMove = safeMoves[0] default defaultMove
 ---
 {
-	move: nextMove,
 	// shout: "Moving $(nextMove)",
 	safeMoves: safeMoves,
+	move: nextMove,
 }
-// payload.board.snakes - id: payload.you.id
