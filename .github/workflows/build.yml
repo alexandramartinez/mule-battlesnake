@@ -59,6 +59,7 @@ jobs:
     - name: Add repo credentials
       uses: s4u/maven-settings-action@v2.6.0
       with:
+        java-version: 8
         servers: |
           [{
            "id": "MuleRepository",
