@@ -56,6 +56,15 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: artifacts
+    - name: Add repo credentials
+      uses: s4u/maven-settings-action@v2.6.0
+      with:
+        servers: |
+          [{
+           "id": "MuleRepository",
+           "username": "${{ secrets.anypoint_platform_username }}",
+           "password": "${{ secrets.anypoint_platform_password }}"
+          }]
     - name: Deploy to Sandbox
       env:
         USERNAME: ${{ secrets.anypoint_platform_username }}
