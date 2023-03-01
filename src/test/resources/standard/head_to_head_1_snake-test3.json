@@ -1,0 +1,222 @@
+{
+   "game": {
+      "id": "b470b7cf-468e-4e92-8f1b-5b64c24ea632",
+      "ruleset": {
+         "name": "standard",
+         "version": "v1.2.3",
+         "settings": {
+            "foodSpawnChance": 15,
+            "minimumFood": 1,
+            "hazardDamagePerTurn": 0,
+            "hazardMap": "",
+            "hazardMapAuthor": "",
+            "royale": {
+               "shrinkEveryNTurns": 0
+            },
+            "squad": {
+               "allowBodyCollisions": false,
+               "sharedElimination": false,
+               "sharedHealth": false,
+               "sharedLength": false
+            }
+         }
+      },
+      "map": "standard",
+      "timeout": 500,
+      "source": "custom"
+   },
+   "turn": 7,
+   "board": {
+      "height": 11,
+      "width": 11,
+      "snakes": [
+         {
+            "id": "gs_fRQX4ByykSBvwgPhxyCfBTb8",
+            "name": "Maxine the Mule",
+            "latency": "163",
+            "health": 95,
+            "body": [
+               {
+                  "x": 6,
+                  "y": 3
+               },
+               {
+                  "x": 6,
+                  "y": 2
+               },
+               {
+                  "x": 7,
+                  "y": 2
+               },
+               {
+                  "x": 7,
+                  "y": 1
+               }
+            ],
+            "head": {
+               "x": 6,
+               "y": 3
+            },
+            "length": 4,
+            "shout": "",
+            "squad": "",
+            "customizations": {
+               "color": "#6c25be",
+               "head": "caffeine",
+               "tail": "nr-booster"
+            }
+         },
+         {
+            "id": "gs_dCk6xr6wPyVhBRRQhVYycB9S",
+            "name": "Maxine the Mule",
+            "latency": "272",
+            "health": 95,
+            "body": [
+               {
+                  "x": 6,
+                  "y": 7
+               },
+               {
+                  "x": 7,
+                  "y": 7
+               },
+               {
+                  "x": 8,
+                  "y": 7
+               },
+               {
+                  "x": 9,
+                  "y": 7
+               }
+            ],
+            "head": {
+               "x": 6,
+               "y": 7
+            },
+            "length": 4,
+            "shout": "",
+            "squad": "",
+            "customizations": {
+               "color": "#6c25be",
+               "head": "caffeine",
+               "tail": "nr-booster"
+            }
+         },
+         {
+            "id": "gs_3m6h3JWJ7YWCtqqJFDjtcKTF",
+            "name": "Maxine the Mule",
+            "latency": "211",
+            "health": 95,
+            "body": [
+               {
+                  "x": 4,
+                  "y": 3
+               },
+               {
+                  "x": 4,
+                  "y": 2
+               },
+               {
+                  "x": 3,
+                  "y": 2
+               },
+               {
+                  "x": 3,
+                  "y": 1
+               }
+            ],
+            "head": {
+               "x": 4,
+               "y": 3
+            },
+            "length": 4,
+            "shout": "",
+            "squad": "",
+            "customizations": {
+               "color": "#6c25be",
+               "head": "caffeine",
+               "tail": "nr-booster"
+            }
+         },
+         {
+            "id": "gs_brc6rK43S4BKK4VCppyc4xRb",
+            "name": "local Maxine",
+            "latency": "276",
+            "health": 95,
+            "body": [
+               {
+                  "x": 5,
+                  "y": 8
+               },
+               {
+                  "x": 4,
+                  "y": 8
+               },
+               {
+                  "x": 3,
+                  "y": 8
+               },
+               {
+                  "x": 3,
+                  "y": 9
+               }
+            ],
+            "head": {
+               "x": 5,
+               "y": 8
+            },
+            "length": 4,
+            "shout": "",
+            "squad": "",
+            "customizations": {
+               "color": "#ffffff",
+               "head": "caffeine",
+               "tail": "nr-booster"
+            }
+         }
+      ],
+      "food": [
+         {
+            "x": 5,
+            "y": 5
+         }
+      ],
+      "hazards": []
+   },
+   "you": {
+      "id": "gs_brc6rK43S4BKK4VCppyc4xRb",
+      "name": "local Maxine",
+      "latency": "276",
+      "health": 95,
+      "body": [
+         {
+            "x": 5,
+            "y": 8
+         },
+         {
+            "x": 4,
+            "y": 8
+         },
+         {
+            "x": 3,
+            "y": 8
+         },
+         {
+            "x": 3,
+            "y": 9
+         }
+      ],
+      "head": {
+         "x": 5,
+         "y": 8
+      },
+      "length": 4,
+      "shout": "",
+      "squad": "",
+      "customizations": {
+         "color": "#ffffff",
+         "head": "caffeine",
+         "tail": "nr-booster"
+      }
+   }
+}

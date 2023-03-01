@@ -141,13 +141,22 @@ var safeMoves = do {
 		then if (isEmpty($)) bestNextMoves else $
 	}).move
 	@Lazy
-	var prioritizedMoves = flatten(closestFood.moves map ($ -- (moves -- filteredBestNextMoves)))
+	var prioritizedMoves = flatten(
+		closestFood.moves map (
+			$ -- (moves -- filteredBestNextMoves)
+		)
+	) -- snakesHeads
+	fun removeSnakesHeads(mvs) = do {
+		var newmvs = mvs -- snakesHeads
+		---
+		if (isEmpty(newmvs)) mvs else newmvs
+	}
 	---
 	if (size < 1) [defaultMove]
 	else if (size == 1) sm
-	else if (size == 2) filteredBestNextMoves
-	else 
-	if (isEmpty(prioritizedMoves)) filteredBestNextMoves else prioritizedMoves
+	else if (size == 2 or isEmpty(prioritizedMoves)) removeSnakesHeads(filteredBestNextMoves)
+	else prioritizedMoves
+		// removeSnakesHeads(prioritizedMoves)
 }
 var nextMove = safeMoves[0] default defaultMove
 ---
