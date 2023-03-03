@@ -1,0 +1,230 @@
+{
+    "game": {
+        "id": "b5be114a-b3d3-4fe8-a774-2ecec71eef12",
+        "ruleset": {
+            "name": "standard",
+            "version": "v1.2.3",
+            "settings": {
+                "foodSpawnChance": 15,
+                "minimumFood": 1,
+                "hazardDamagePerTurn": 0,
+                "hazardMap": "",
+                "hazardMapAuthor": "",
+                "royale": {
+                    "shrinkEveryNTurns": 0
+                },
+                "squad": {
+                    "allowBodyCollisions": false,
+                    "sharedElimination": false,
+                    "sharedHealth": false,
+                    "sharedLength": false
+                }
+            }
+        },
+        "map": "standard",
+        "timeout": 500,
+        "source": "ladder"
+    },
+    "turn": 15,
+    "board": {
+        "height": 11,
+        "width": 11,
+        "snakes": [
+            {
+                "id": "gs_hvmyt9F3d8JdKdCCSQ9Ffby6",
+                "name": "bottleSnek",
+                "latency": "50",
+                "health": 95,
+                "body": [
+                    {
+                        "x": 2,
+                        "y": 3
+                    },
+                    {
+                        "x": 2,
+                        "y": 4
+                    },
+                    {
+                        "x": 3,
+                        "y": 4
+                    },
+                    {
+                        "x": 3,
+                        "y": 5
+                    },
+                    {
+                        "x": 4,
+                        "y": 5
+                    }
+                ],
+                "head": {
+                    "x": 2,
+                    "y": 3
+                },
+                "length": 5,
+                "shout": "",
+                "squad": "",
+                "customizations": {
+                    "color": "#3e338f",
+                    "head": "silly",
+                    "tail": "bolt"
+                }
+            },
+            {
+                "id": "gs_fYD4CVwmJcHfCx9kfGrhQSqT",
+                "name": "Grumbles",
+                "latency": "1",
+                "health": 85,
+                "body": [
+                    {
+                        "x": 2,
+                        "y": 9
+                    },
+                    {
+                        "x": 1,
+                        "y": 9
+                    },
+                    {
+                        "x": 1,
+                        "y": 8
+                    }
+                ],
+                "head": {
+                    "x": 2,
+                    "y": 9
+                },
+                "length": 3,
+                "shout": "",
+                "squad": "",
+                "customizations": {
+                    "color": "#f94c7f",
+                    "head": "safe",
+                    "tail": "default"
+                }
+            },
+            {
+                "id": "gs_YSPpyfyvhfxdMBM7dJSWQtPY",
+                "name": "Maxine the Mule",
+                "latency": "109",
+                "health": 92,
+                "body": [
+                    {
+                        "x": 3,
+                        "y": 8
+                    },
+                    {
+                        "x": 4,
+                        "y": 8
+                    },
+                    {
+                        "x": 5,
+                        "y": 8
+                    },
+                    {
+                        "x": 6,
+                        "y": 8
+                    },
+                    {
+                        "x": 6,
+                        "y": 7
+                    }
+                ],
+                "head": {
+                    "x": 3,
+                    "y": 8
+                },
+                "length": 5,
+                "shout": "",
+                "squad": "",
+                "customizations": {
+                    "color": "#6c25be",
+                    "head": "caffeine",
+                    "tail": "nr-booster"
+                }
+            },
+            {
+                "id": "gs_J7KWP3FJckyVh8dmqhqGSjT3",
+                "name": "mag-mamba",
+                "latency": "162",
+                "health": 93,
+                "body": [
+                    {
+                        "x": 5,
+                        "y": 2
+                    },
+                    {
+                        "x": 6,
+                        "y": 2
+                    },
+                    {
+                        "x": 6,
+                        "y": 3
+                    },
+                    {
+                        "x": 7,
+                        "y": 3
+                    }
+                ],
+                "head": {
+                    "x": 5,
+                    "y": 2
+                },
+                "length": 4,
+                "shout": "",
+                "squad": "",
+                "customizations": {
+                    "color": "#b727f1",
+                    "head": "orca",
+                    "tail": "rocket"
+                }
+            }
+        ],
+        "food": [
+            {
+                "x": 2,
+                "y": 0
+            }
+        ],
+        "hazards": []
+    },
+    "you": {
+        "id": "gs_YSPpyfyvhfxdMBM7dJSWQtPY",
+        "name": "Maxine the Mule",
+        "latency": "109",
+        "health": 92,
+        "body": [
+            {
+                "x": 3,
+                "y": 8
+            },
+            {
+                "x": 4,
+                "y": 8
+            },
+            {
+                "x": 5,
+                "y": 8
+            },
+            {
+                "x": 6,
+                "y": 8
+            },
+            {
+                "x": 6,
+                "y": 7
+            }
+        ],
+        "head": {
+            "x": 3,
+            "y": 8
+        },
+        "length": 5,
+        "shout": "",
+        "squad": "",
+        "customizations": {
+            "color": "#6c25be",
+            "head": "caffeine",
+            "tail": "nr-booster"
+        }
+    }
+}

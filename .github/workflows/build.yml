@@ -87,4 +87,5 @@ jobs:
         mvn deploy -DskipMunitTests -DmuleDeploy \
          -Dmule.artifact=$artifactName \
          -Dclient.id="$ID" \
-         -Dclient.secret="$SECRET" 
+         -Dclient.secret="$SECRET" \
+         -Denv=dev

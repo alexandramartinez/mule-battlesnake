@@ -1,167 +1,136 @@
 %dw 2.0
-import drop from dw::core::Arrays
-
 output application/json
+import * from dw::Common
 
-type Coordinates = {
-	x: Number,
-	y: Number
-}
-type Moves = "up" | "down" | "left" | "right"
-type Body = Array<Coordinates>
-
-var head = payload.you.head
-var body = payload.you.body
-var length = payload.you.length
-
-var board = payload.board
-var boardWidth = board.width - 1
-var boardHeight = board.height - 1
+var moves:Array<Move> = ["up", "down", "left", "right"]
+var me:Snake = payload.you
+var board:Board = payload.board
+var otherSnakes = board.snakes filter ($.id != me.id)
 var food = board.food
-var otherSnakes = board.snakes filter ($.id != payload.you.id)
-var otherSnakesBodies = flatten(otherSnakes.body) //flatten(otherSnakes.body map ($ drop 1))
-var otherSnakesHeads = otherSnakes map {
-    ($.head),
-    length: $.length
+var maxFutureMoves = 8
+var orderedFood = if (isEmpty(food)) [] else (
+    food map {
+        distance: me.head distanceTo $,
+        directions: me.head whereIs $
+    } orderBy ($.distance) 
+)
+var maxScore:Number = sizeOf(food) + 3 // bc there are max 3 possible moves
+var negativeScore:Number = -100*maxScore
+var bodyScore:ScorePoints = {
+    positive: maxScore,
+    negative: negativeScore
+}
+var wallsScore:ScorePoints = {
+    positive: maxScore,
+    negative: negativeScore
+}
+var snakesHeadsScore:ScorePoints = {
+    positive: maxScore+1,
+    negative: -(maxScore+2)
+}
+var foodScore:ScorePoints = {
+    positive: maxScore, // - index
+    negative: 0
+}
+var futureScore:ScorePoints = {
+    positive: maxScore, // will be overriden to be sizeOf(filteredFutureMoves)
+    negative: negativeScore
 }
 
-var moves = ["up", "down", "left", "right"]
-var defaultMove = 'up'
-var defaultMaxIterations = 7
-
-fun getCoordinates(initial: Coordinates, direction: Moves): Coordinates = 
-	direction match {
-		case "down" -> {
-			x: initial.x,
-			y: initial.y - 1
-		}
-		case "up" -> {
-			x: initial.x,
-			y: initial.y + 1
-		}
-		case "left" -> {
-			x: initial.x - 1,
-			y: initial.y
-		}
-		case "right" -> {
-			x: initial.x + 1,
-			y: initial.y
-		}
-		else -> initial
-	}
-fun whichDirections(c1:Coordinates, c2:Coordinates):Array = do {
-	var xDistance = c1.x - c2.x
-    var yDistance = c1.y - c2.y
-	---
-	[
-		('left') if (xDistance >= 1),
-		('right') if (xDistance <= -1),
-		('down') if (yDistance >= 1),
-		('up') if (yDistance <= -1)
-	]
+fun getBodyScore(snakes:Array<Snake>, myNewHead:Point):Number = do {
+    sum(snakes map (
+        if ($.body contains myNewHead) bodyScore.negative
+        else bodyScore.positive
+    ))
 }
-fun getDistance(c1:Coordinates, c2:Coordinates):Number =
-	abs(c1.x - c2.x) + abs(c1.y - c2.y)
-fun getSafeMoves(body:Body, availableMoves:Array<Moves> = moves): Array = do {
-	var head:Coordinates = body[0]
-	var wallsLocations = [
-		('down') if head.y == 0,
-		('up') if head.y == boardWidth,
-		('left') if head.x == 0,
-		('right') if head.x == boardHeight
-	]
-	var myBodyLocations = availableMoves map (move) -> do {
-		var newCoordinate = getCoordinates(head, move)
-		---
-		if (body contains newCoordinate) move
-		else ''
-	}
-	var snakesBodies = if (isEmpty(otherSnakesBodies)) []
-		else availableMoves map (move) -> do {
-			var newCoordinate = getCoordinates(head, move)
-			---
-			if (otherSnakesBodies contains newCoordinate) move
-			else ''
-		}
-	---
-	availableMoves -- wallsLocations -- myBodyLocations -- snakesBodies
-
+fun getWallsScore(myNewHead:Point):Number = do {
+    myNewHead match {
+        case p if p.x < 0 -> wallsScore.negative
+        case p if p.y < 0 -> wallsScore.negative
+        case p if p.x >= board.width -> wallsScore.negative
+        case p if p.y >= board.height -> wallsScore.negative
+        else -> wallsScore.positive
+    }
 }
-fun getBestNextMovesFrom(body:Body, availableMoves:Array, maxIterations=defaultMaxIterations) = do {
-	(availableMoves map (safeMove) -> do {
-		var newBody = getCoordinates(body[0], safeMove) >> body[0 to -2]
-		var newSafeMoves = getSafeMoves(newBody)
-		---
-		{
-			move: safeMove,
-			// newBody: newBody,
-			futureAvailableMoves: if (maxIterations != 1)
-					getBestNextMovesFrom(newBody, newSafeMoves, maxIterations-1)
-				else newSafeMoves,
-			size: sizeOf(newSafeMoves)
-		}
-	}) map {
-		move: $.move,
-		size: flatten($..size) then sum($) // NOTE: flatten should not be necessary
-	}
-	orderBy -$.size
-	// filter ($.size > 1) // NOTE: why is this changing the size????
-} 
-fun getClosestFood(head:Coordinates, food:Array<Coordinates>) = do {
-	food map {
-		($),
-		distance: head getDistance $,
-		moves: head whichDirections $
-	} 
-	orderBy $.distance
-	distinctBy $.moves
+fun getSnakesHeadsScore(snakes:Array<Snake>, myNewHead:Point, myLength:Number):Number = do {
+    var closeSnakes = if (isEmpty(otherSnakes)) null
+        else (snakes map (snake) -> {
+            distance: snake.head distanceTo myNewHead,
+            score: if (snake.length >= myLength) snakesHeadsScore.negative
+                else snakesHeadsScore.positive
+        }) filter ($.distance <= 2)
+    ---
+    sum(closeSnakes.score default [])
 }
-
-var snakesHeads = otherSnakesHeads map {
-		($),
-		distance: head getDistance $,
-		directions: head whichDirections $
-	} filter ($.distance <= 2 and $.length >= length)
-	then flatten($.directions)
-	then $ default []
-var closestFood = head getClosestFood food
-var safeMoves = do {
-	var sm = getSafeMoves(body, moves) //-- snakesHeads
-	var size = sizeOf(sm)
-	@Lazy
-	var bestNextMoves = (body getBestNextMovesFrom sm) 
-	@Lazy
-	var filteredBestNextMoves = (do {
-		var avgSize = avg(bestNextMoves.size)
-		---
-		if (
-			(bestNextMoves[0].size - bestNextMoves[-1].size) > avgSize
-		) bestNextMoves filter ($.size > avgSize)
-		else (bestNextMoves filter ($.size > 1)) // NOTE: this filter is a workaround. should be in the getBestNextMovesFrom function
-		then if (isEmpty($)) bestNextMoves else $
-	}).move
-	@Lazy
-	var prioritizedMoves = flatten(
-		closestFood.moves map (
-			$ -- (moves -- filteredBestNextMoves)
-		)
-	) -- snakesHeads
-	fun removeSnakesHeads(mvs) = do {
-		var newmvs = mvs -- snakesHeads
-		---
-		if (isEmpty(newmvs)) mvs else newmvs
-	}
-	---
-	if (size < 1) [defaultMove]
-	else if (size == 1) sm
-	else if (size == 2 or isEmpty(prioritizedMoves)) removeSnakesHeads(filteredBestNextMoves)
-	else prioritizedMoves
-		// removeSnakesHeads(prioritizedMoves)
+fun getFoodScore(move:Move):Number = do {
+    if (isEmpty(food)) 0
+    else sum(orderedFood map (
+        if ($.directions contains move) foodScore.positive - $$
+        else foodScore.negative
+    ))
 }
-var nextMove = safeMoves[0] default defaultMove
+fun getFutureMovesNumber(newHead:Point, currentBody:Array<Point>):Number = do {
+    var isInsideWalls = getWallsScore(newHead) > 0
+    var collidesWithSnakes = flatten(otherSnakes.body) contains newHead
+    var collidesWithSelf = currentBody contains newHead
+    ---
+    if (isInsideWalls and !collidesWithSnakes and !collidesWithSelf) 1
+    else 0
+}
+fun getFuture(myBody:Array<Point>, move:Move, maxIterations=maxFutureMoves) = do {
+    @Lazy
+    var newHead = myBody[0] moveTo move
+    @Lazy
+    var validMove = getFutureMovesNumber(newHead, myBody) // 1 or 0
+    @Lazy
+    var isFood = food contains newHead
+    @Lazy
+    var newMe = if (isFood) newHead >> myBody
+        else (newHead >> myBody[0 to -2])
+    ---
+    if (maxIterations == 0 or validMove == 0) 0
+    else validMove + sum(
+        moves map (
+            getFuture(newMe, $, maxIterations-1)
+        )
+    )
+}
+var scoredMoves = moves map do {
+    var myNewHead:Point = me.head moveTo $
+    var snakesHeadsScore = getSnakesHeadsScore(otherSnakes, myNewHead, me.length)
+    var foodScore = getFoodScore($)
+    var foodAndSnakesHeadsScore = if (snakesHeadsScore < 0) snakesHeadsScore
+        else snakesHeadsScore + foodScore
+    var score:Number = 
+            getBodyScore(board.snakes, myNewHead) +
+            getWallsScore(myNewHead) +
+            foodAndSnakesHeadsScore
+    ---
+    {
+        move: $,
+        score: score,
+        futureMoves: (getFuture(me.body, $))
+        // DONE - up and left should have more points than down
+        // DONE - left should have more points than up because of the food
+        // turn 15 https://play.battlesnake.com/game/b5be114a-b3d3-4fe8-a774-2ecec71eef12
+    }
+}
+var finalMoves = do {
+    var filteredFutureMoves = scoredMoves filter ($.futureMoves > 0) orderBy -($.futureMoves)
+    var avgFutureMoves = avg(filteredFutureMoves.futureMoves)
+    var diff = filteredFutureMoves[0].futureMoves - filteredFutureMoves[-1].futureMoves
+    var needToFilterFurther = diff > avgFutureMoves
+    var maxScoreOverride = sizeOf(filteredFutureMoves)
+    ---
+    filteredFutureMoves map {
+        ($ - "score"),
+        score: $.score +
+            if (needToFilterFurther and $.futureMoves < avgFutureMoves) futureScore.negative
+            else maxScoreOverride - $$
+    }
+} orderBy -($.score)
 ---
 {
-	// shout: "Moving $(nextMove)",
-	safeMoves: safeMoves,
-	move: nextMove,
+    debug: finalMoves,
+    move: finalMoves.move[0] default 'up'
 }
