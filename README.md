@@ -43,4 +43,4 @@ For example:
   ]
 ```
 
-You can battle Maxine by using her from the public snakes.
+You can battle Maxine by using her from the public snakes when you [create a game](https://play.battlesnake.com/account/games/create).
