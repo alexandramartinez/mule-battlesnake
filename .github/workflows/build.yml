@@ -3,8 +3,6 @@ name: Build and Deploy to Sandbox
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
     
 jobs:
   test:
@@ -114,4 +112,5 @@ jobs:
         mvn deploy -DskipMunitTests -DmuleDeploy \
          -Dmule.artifact=$artifactName \
          -Dclient.id="$ID" \
-         -Dclient.secret="$SECRET" 
+         -Dclient.secret="$SECRET" \
+         -Denv=dev
