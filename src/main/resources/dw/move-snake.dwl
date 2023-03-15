@@ -110,9 +110,6 @@ var scoredMoves = moves map do {
         move: $,
         score: score,
         futureMoves: (getFuture(me.body, $))
-        // DONE - up and left should have more points than down
-        // DONE - left should have more points than up because of the food
-        // turn 15 https://play.battlesnake.com/game/b5be114a-b3d3-4fe8-a774-2ecec71eef12
     }
 }
 var finalMoves = do {
@@ -131,6 +128,6 @@ var finalMoves = do {
 } orderBy -($.score)
 ---
 {
-    debug: finalMoves,
+    debug: scoredMoves,
     move: finalMoves.move[0] default 'up'
 }

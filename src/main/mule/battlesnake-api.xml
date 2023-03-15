@@ -114,7 +114,7 @@ output application/json
 		<logger level="INFO" doc:name="Logger" doc:id="b320da4e-842c-40a6-b021-db4e0247a345" message="#[payload]"/>
     </flow>
     <flow name="post:\move:application\json:battlesnake-api-config" doc:id="0b99858e-58e7-4071-89db-868292f55b18">
-        <logger level="INFO" message="#['Move Game $(payload.game.id)']" />
+        <logger level="INFO" message="#['Move Game $(payload.game.id) turn $(payload.turn)']" />
 		<logger level="INFO" doc:name="Logger" doc:id="1423365b-9bc2-4e2e-9f28-a85fa84de445" message="#[payload]"/>
 		<ee:transform doc:name="Transform Message" doc:id="54a59f57-b3b2-49c9-9df1-ea5de079e976" >
 			<ee:message >
