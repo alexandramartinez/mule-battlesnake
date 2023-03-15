@@ -12,7 +12,7 @@ To get started with your own Mule and DataWeave Battlesnake, please refer to Man
 
 ## About my Battlesnake
 
-**Maxine the Mule** version 2 is based on a scoring system to take better decisions. 
+`Maxine the Mule` version 2 is based on a scoring system to take better decisions. 
 
 She counts the scores for each move (up, down, left, right) depending on a series of criteria like food, other snakes, walls, and so on. Based on those scores, she takes a decision.
 
