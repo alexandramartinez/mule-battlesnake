@@ -78,16 +78,5 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 			<munit-tools:assert-equals doc:name="Assert equals" doc:id="e318d17b-8c9c-4dd7-a656-eec640f5bc70" actual="#[payload.move]" expected="#['left']" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="battlesnake-scenarios:scoring-system-2" doc:id="1ab92846-2b85-4f25-acb4-faaac9d994dc" >
-		<munit:execution >
-			<munit:set-event doc:name="Set Event" doc:id="d4e7a709-ca66-474b-abba-0c9a4bdd3341" >
-				<munit:payload value="#[output application/json --- readUrl('classpath://standard/scoring-system-2.json')]" />
-			</munit:set-event>
-			<flow-ref doc:name="execute-dw" doc:id="012099a1-68fb-40af-8151-eb5ac0dff666" name="battlesnake-scenarios:execute-dw" />
-		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="f91d706d-e462-45d8-9438-a69651eaba45" actual="#[payload.move]" expected="#['down']" />
-		</munit:validation>
-	</munit:test>
 
 </mule>

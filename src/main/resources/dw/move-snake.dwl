@@ -20,8 +20,8 @@ var wallsScore:ScorePoints = {
     negative: negativeScore
 }
 var snakesHeadsScore:ScorePoints = {
-    positive: 1,
-    negative: -(maxScore+2)
+    positive: 1, // + snakeIdx
+    negative: -1 // - snakeIdx?
 }
 var foodScore:ScorePoints = {
     positive: sizeOf(food), // - index
@@ -59,10 +59,10 @@ fun getWallsScore(myNewHead:Point):Number = do {
 }
 fun getSnakesHeadsScore(snakes:Array<Snake>, myNewHead:Point, myLength:Number):Number = do {
     var closeSnakes = if (isEmpty(otherSnakes)) null
-        else (snakes map (snake) -> {
+        else (snakes map (snake, snakeIdx) -> {
             distance: snake.head distanceTo myNewHead,
-            score: if (snake.length >= myLength) snakesHeadsScore.negative
-                else snakesHeadsScore.positive
+            score: if (snake.length >= myLength) snakesHeadsScore.negative - snakeIdx
+                else snakesHeadsScore.positive + snakeIdx
         }) filter ($.distance <= 2)
     ---
     sum(closeSnakes.score default [])
@@ -109,7 +109,9 @@ var scoredMoves = moves map do {
     var score:Number = 
             getBodyScore(board.snakes, myNewHead) 
             + getWallsScore(myNewHead) 
-            + foodAndSnakesHeadsScore
+            + foodScore
+            + snakesHeadsScore
+            // + foodAndSnakesHeadsScore
     ---
     {
         move: $,
