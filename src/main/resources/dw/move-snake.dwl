@@ -8,34 +8,39 @@ var board:Board = payload.board
 var otherSnakes = board.snakes filter ($.id != me.id)
 var food = board.food
 var maxFutureMoves = 8
-var orderedFood = if (isEmpty(food)) [] else (
-    food map {
-        distance: me.head distanceTo $,
-        directions: me.head whereIs $
-    } orderBy ($.distance) 
-)
+
 var maxScore:Number = sizeOf(food) + 3 // bc there are max 3 possible moves
 var negativeScore:Number = -100*maxScore
 var bodyScore:ScorePoints = {
-    positive: maxScore,
+    positive: 1,
     negative: negativeScore
 }
 var wallsScore:ScorePoints = {
-    positive: maxScore,
+    positive: 1,
     negative: negativeScore
 }
 var snakesHeadsScore:ScorePoints = {
-    positive: maxScore+1,
+    positive: 1,
     negative: -(maxScore+2)
 }
 var foodScore:ScorePoints = {
-    positive: maxScore, // - index
+    positive: sizeOf(food), // - index
     negative: 0
 }
 var futureScore:ScorePoints = {
     positive: maxScore, // will be overriden to be sizeOf(filteredFutureMoves)
-    negative: negativeScore
+    negative: -1
 }
+
+var orderedFood = if (isEmpty(food)) [] else (
+    food map {
+        distance: me.head distanceTo $,
+        directions: me.head whereIs $
+    } orderBy ($.distance) map {
+        score: foodScore.positive - $$,
+        ($)
+    }
+)
 
 fun getBodyScore(snakes:Array<Snake>, myNewHead:Point):Number = do {
     sum(snakes map (
@@ -64,8 +69,8 @@ fun getSnakesHeadsScore(snakes:Array<Snake>, myNewHead:Point, myLength:Number):N
 }
 fun getFoodScore(move:Move):Number = do {
     if (isEmpty(food)) 0
-    else sum(orderedFood map (
-        if ($.directions contains move) foodScore.positive - $$
+    else max(orderedFood map (
+        if ($.directions contains move) $.score
         else foodScore.negative
     ))
 }
@@ -102,9 +107,9 @@ var scoredMoves = moves map do {
     var foodAndSnakesHeadsScore = if (snakesHeadsScore < 0) snakesHeadsScore
         else snakesHeadsScore + foodScore
     var score:Number = 
-            getBodyScore(board.snakes, myNewHead) +
-            getWallsScore(myNewHead) +
-            foodAndSnakesHeadsScore
+            getBodyScore(board.snakes, myNewHead) 
+            + getWallsScore(myNewHead) 
+            + foodAndSnakesHeadsScore
     ---
     {
         move: $,
@@ -115,19 +120,22 @@ var scoredMoves = moves map do {
 var finalMoves = do {
     var filteredFutureMoves = scoredMoves filter ($.futureMoves > 0) orderBy -($.futureMoves)
     var avgFutureMoves = avg(filteredFutureMoves.futureMoves)
-    var diff = filteredFutureMoves[0].futureMoves - filteredFutureMoves[-1].futureMoves
+    var diff = (max(filteredFutureMoves.futureMoves) default 0) - (min(filteredFutureMoves.futureMoves) default 0)
     var needToFilterFurther = diff > avgFutureMoves
     var maxScoreOverride = sizeOf(filteredFutureMoves)
     ---
     filteredFutureMoves map {
         ($ - "score"),
-        score: $.score +
-            if (needToFilterFurther and $.futureMoves < avgFutureMoves) futureScore.negative
+        score: $.score + (
+            if (needToFilterFurther and ($.futureMoves < avgFutureMoves)) futureScore.negative
             else maxScoreOverride - $$
+            then $/2
+        )
     }
 } orderBy -($.score)
 ---
 {
-    debug: scoredMoves,
+    debug: finalMoves,
+    orderedFood: orderedFood,
     move: finalMoves.move[0] default 'up'
 }
