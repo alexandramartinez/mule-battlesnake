@@ -4,7 +4,7 @@
 
 Cool tool to check other scenarios: [Battlesnake board generator](https://nettogrof.github.io/battle-snake-board-generator/).
 
-Watch my Battlesnake live streams on [Twitch](https://www.twitch.tv/devalexmartinez) or [YouTube](https://www.youtube.com/playlist?list=PLb61lESgk6hi60IazebMZ7pmZBZeIcEKt).
+Watch my Battlesnake live streams on [Twitch](https://www.twitch.tv/devalexmartinez) or [YouTube](https://www.youtube.com/playlist?list=PLb61lESgk6hi60IazebMZ7pmZBZeIcEKt). 
 
 ## Quickstart
 
