@@ -27,10 +27,10 @@ var foodScore:ScorePoints = {
     positive: sizeOf(food), // - index
     negative: 0
 }
-var futureScore:ScorePoints = {
-    positive: maxScore, // will be overriden to be sizeOf(filteredFutureMoves)
-    negative: -1
-}
+// var futureScore:ScorePoints = {
+//     positive: maxScore, // will be overriden to be sizeOf(filteredFutureMoves)
+//     negative: -1
+// }
 
 var orderedFood = if (isEmpty(food)) [] else (
     food map {
@@ -118,21 +118,29 @@ var scoredMoves = moves map do {
         score: score,
         futureMoves: (getFuture(me.body, $))
     }
-}
+} orderBy -($.score)
 var finalMoves = do {
     var filteredFutureMoves = scoredMoves filter ($.futureMoves > 0) orderBy -($.futureMoves)
+    @Lazy
     var avgFutureMoves = avg(filteredFutureMoves.futureMoves)
+    @Lazy
     var diff = (max(filteredFutureMoves.futureMoves) default 0) - (min(filteredFutureMoves.futureMoves) default 0)
+    @Lazy
     var needToFilterFurther = diff > avgFutureMoves
+    @Lazy
     var maxScoreOverride = sizeOf(filteredFutureMoves)
     ---
-    filteredFutureMoves map {
-        ($ - "score"),
-        score: $.score + (
-            if (needToFilterFurther and ($.futureMoves < avgFutureMoves)) futureScore.negative
-            else maxScoreOverride - $$
-            then $/2
-        )
+    if (isEmpty(filteredFutureMoves)) scoredMoves
+    else filteredFutureMoves map (ffm) -> {
+        (ffm - "score"),
+        // score: $.score + (
+        //     if (needToFilterFurther and ($.futureMoves < avgFutureMoves)) futureScore.negative
+        //     else maxScoreOverride - $$
+        //     then $/2
+        // )
+        score: (maxScoreOverride - $$)/2 then
+            if (needToFilterFurther and (ffm.futureMoves < avgFutureMoves)) ffm.score - $
+            else ffm.score + $
     }
 } orderBy -($.score)
 ---
