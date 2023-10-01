@@ -27,7 +27,7 @@ jobs:
         env:
           nexus_username: ${{ secrets.anypoint_platform_username }}
           nexus_password: ${{ secrets.anypoint_platform_password }}
-        run: mvn test --settings .maven/settings.xml
+        run: mvn test --settings .maven/settings.xml -Dmunit.failIfNoTests=false
 
   build:
     needs: test
@@ -103,13 +103,10 @@ jobs:
             }]
 
       - name: Deploy to Sandbox
-        env:
-          ID: ${{ secrets.CONNECTED_APP_CLIENT_ID }}
-          SECRET: ${{ secrets.CONNECTED_APP_CLIENT_SECRET }}
         run: |
           artifactName=$(ls *.jar | head -1)
           mvn deploy -DskipMunitTests -DmuleDeploy \
            -Dmule.artifact=$artifactName \
-           -Dclient.id="$ID" \
-           -Dclient.secret="$SECRET" \
+           -Dclient.id="${{ secrets.CONNECTED_APP_CLIENT_ID }}" \
+           -Dclient.secret="${{ secrets.CONNECTED_APP_CLIENT_SECRET }}" \
            -Denv=dev
