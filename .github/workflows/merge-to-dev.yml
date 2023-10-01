@@ -1,0 +1,15 @@
+name: Create PR to dev
+
+on:
+  workflow_dispatch:
+
+jobs:
+  createPR:
+    name: Create PR from ${{ github.ref_name }} to dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create a new Pull Request to dev
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: ${{ github.ref_name }}
+          base: dev
