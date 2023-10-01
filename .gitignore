@@ -49,3 +49,4 @@ velocity.log
 .idea/
 ${sys:mule.home}/
 src/main/resources/weave/
+.tooling-project
