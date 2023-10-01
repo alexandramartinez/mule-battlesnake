@@ -8,15 +8,15 @@ jobs:
     env:
       originBranch: ${{ github.ref_name }}
       toBranch: dev
-    name: Create PR from $originBranch to $toBranch
+    name: "Create PR from $originBranch to $toBranch"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: $toBranch
+          ref: ${{ env.toBranch }}
       - name: Reset branch
         run: |
-            git fetch origin $originBranch:$originBranch
+            git fetch origin ${{ env.originBranch }}:${{ env.originBranch }}
             git reset --hard $originBranch
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
