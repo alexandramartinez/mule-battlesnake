@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
     <groupId>com.prostdev</groupId>
     <artifactId>mule-battlesnake</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
     <packaging>mule-application</packaging>
-    
     <name>mule-battlesnake</name>
-    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -21,8 +18,9 @@
         <workerType>MICRO</workerType>
         <environment>Sandbox</environment>
         <munit.version>2.3.15</munit.version>
+        <!-- DataWeave -->
+        <dataweave.version>2.4.0-20221212</dataweave.version>
     </properties>
-    
     <build>
         <plugins>
             <plugin>
@@ -81,7 +79,6 @@
             </plugin>
         </plugins>
     </build>
-    
     <dependencies>
         <dependency>
             <groupId>org.mule.connectors</groupId>
@@ -124,11 +121,16 @@
         <dependency>
             <groupId>com.mulesoft.services</groupId>
             <artifactId>mule-service-weave-ee</artifactId>
-            <version>2.4.0-20221212</version>
+            <version>${dataweave.version}</version>
             <scope>runtime</scope>
         </dependency>
+        <!-- not sure if this is expected -->
+        <dependency>
+            <groupId>org.mule.weave</groupId>
+            <artifactId>wlang</artifactId>
+            <version>${dataweave.version}</version>
+        </dependency>
     </dependencies>
-    
     <repositories>
         <repository>
             <id>anypoint-exchange-v2</id>
@@ -149,7 +151,6 @@
             <layout>default</layout>
         </repository>
     </repositories>
-    
     <pluginRepositories>
         <pluginRepository>
             <id>mulesoft-releases</id>
@@ -161,5 +162,4 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-    
 </project>
