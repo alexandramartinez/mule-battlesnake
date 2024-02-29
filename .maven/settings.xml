@@ -31,7 +31,19 @@
           <snapshots>
             <enabled>true</enabled>
           </snapshots>
-        </repository>     
+        </repository>
+        <repository>
+          <id>MuleRepositoryPublic</id>
+          <name>MuleRepositoryPublic</name>
+          <url>https://repository.mulesoft.org/nexus/content/repositories/public</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
       </repositories>
     </profile>
   </profiles>
