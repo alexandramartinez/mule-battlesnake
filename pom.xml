@@ -17,7 +17,7 @@
         <workers>1</workers>
         <workerType>MICRO</workerType>
         <environment>Sandbox</environment>
-        <munit.version>2.3.15</munit.version>
+        <munit.version>3.1.0</munit.version>
         <!-- DataWeave -->
         <dataweave.version>2.6.0</dataweave.version>
     </properties>
