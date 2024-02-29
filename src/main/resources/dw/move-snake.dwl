@@ -1,4 +1,4 @@
-%dw 2.5
+%dw 2.0
 output application/json
 import update from dw::util::Values
 import * from dw::Common
@@ -11,7 +11,7 @@ var food = board.food
 var boardWidth = board.width - 1
 var boardHeight = board.height - 1
 var maxFutureMoves = 8
-var otherSnake = (board.snakes filter ($.id != me.id))[0]
+var otherSnakes:Array<Snake> = (board.snakes filter ($.id != me.id))
 
 fun getWallsLocations(head:Point) = [
     ('down') if head.y == 0,
@@ -19,17 +19,17 @@ fun getWallsLocations(head:Point) = [
     ('left') if head.x == 0,
     ('right') if head.x == boardHeight
 ]
-fun getOwnBodyLocations(body:Array<Point>) = filterMovesByHeadAndBody(body, body[0])
-fun getOtherSnakeBodyLocations(myHead:Point, otherSnakeBody:Array<Point>) = filterMovesByHeadAndBody(otherSnakeBody, myHead)
-fun getSafeMoves(myBody:Array<Point>, otherSnakeBody:Array<Point>) = (
+fun getOwnBodyLocations(body:Array<Point>):Array = filterMovesByHeadAndBody(body, body[0])
+fun getOtherSnakesBodyLocations(myHead:Point, otherSnakesBodies:Array<Array<Point>>):Array = otherSnakesBodies flatMap filterMovesByHeadAndBody($, myHead)
+fun getSafeMoves(myBody:Array<Point>, otherSnakesBodies:Array<Array<Point>>):Array<Move> = (
     allMoves 
     -- getWallsLocations(myBody[0]) 
     -- getOwnBodyLocations(myBody)
-    -- getOtherSnakeBodyLocations(myBody[0], otherSnakeBody)
+    -- getOtherSnakesBodyLocations(myBody[0], otherSnakesBodies)
 )
-var safeMoves = getSafeMoves(me.body, otherSnake.body)
-fun getClosestFoodLocations(availableMoves, food, head:Point) = do {
-    var suggestedMoves = food map {
+var safeMoves:Array<Move> = getSafeMoves(me.body, otherSnakes.body)
+fun getClosestFoodLocations(availableMoves, food, head:Point):Array<Move> = do {
+    var suggestedMoves:Array = food map {
             ($),
             distance: head distanceTo $,
             moves: (head whereIs $) -- (allMoves -- availableMoves)
@@ -39,19 +39,24 @@ fun getClosestFoodLocations(availableMoves, food, head:Point) = do {
     if (not isEmpty(suggestedMoves))
         suggestedMoves
         orderBy $.distance
-        distinctBy $.moves
         then flatten($.moves)
-    else availableMoves
+        distinctBy $
+    else []
 }
-fun getOtherSnakeHeadLocation(availableMoves, mySnake:Snake, otherSnake:Snake) = do {
-    var isSnakeClose = (mySnake.head distanceTo otherSnake.head) <= 2
-    @Lazy
-    var isSnakeSmaller = otherSnake.length < mySnake.length
+fun getOtherSnakesHeadLocations(availableMoves, mySnake:Snake, otherSnakes:Array<Snake>):Array<Move> = do {
+    var closeSnakes:Array = (otherSnakes map {
+        ($),
+        isClose: (mySnake.head distanceTo $.head) <= 2,
+        isSmaller: $.length < mySnake.length
+    }) filter ($.isClose)
     ---
-    if (isSnakeClose)
-        if (isSnakeSmaller) availableMoves // change this behaviour if you want to be aggressive
-        else availableMoves -- (mySnake.head whereIs otherSnake.head)
-    else availableMoves
+    closeSnakes match {
+        case s if sizeOf(s) >= 1 -> s flatMap (
+            if ($.isSmaller) availableMoves // change this behaviour if you want to be aggressive
+            else availableMoves -- (mySnake.head whereIs $.head)
+        )
+        else -> []
+    }
 }
 // fun getFutureMovesNumber(newHead:Point, currentBody:Array<Point>):Number = do {
 //     var isInsideWalls = getWallsScore(newHead) > 0
@@ -85,25 +90,25 @@ fun getOtherSnakeHeadLocation(availableMoves, mySnake:Snake, otherSnake:Snake) =
 //     @Lazy
 //     var validMove = 
 // }
-var countedMoves = (
-    (safeMoves
-    ++ getClosestFoodLocations(safeMoves, food, myHead)
-    ++ getOtherSnakeHeadLocation(safeMoves, me, otherSnake))
-    reduce ((item, acc={}) -> 
+fun getMovesCount(moves:Array<Move>, existingCountedMoves={}):Object = moves reduce (
+    (item, acc=existingCountedMoves) -> 
         if (acc[item] == null) 
-            acc ++ {
+            {
+                (acc),
                 (item): 1
             }
         else acc update item with (acc[item] + 1)
-    )
-    orderBy -$
-)
+    ) orderBy -$
+var countedMoves = do {
+    var otherSnakesHeads = getOtherSnakesHeadLocations(safeMoves, me, otherSnakes)
+    var closestFood = getClosestFoodLocations(safeMoves, food, myHead)
+    ---
+    getMovesCount(otherSnakesHeads)
+    then getMovesCount(closestFood, $)
+}
 ---
 {
     debug: countedMoves,
-    // safeMoves: safeMoves,
-    // getClosestFoodLocations: getClosestFoodLocations(safeMoves, food, myHead),
-    // getOtherSnakeHeadLocation: getOtherSnakeHeadLocation(safeMoves, me, otherSnake),
-    move: keysOf(countedMoves)[0] default 'up',
+    move: keysOf(countedMoves)[0] default safeMoves[0],
     turn: payload.turn
 }
