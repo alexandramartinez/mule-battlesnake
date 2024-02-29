@@ -4,6 +4,7 @@ import update from dw::util::Values
 import * from dw::Common
 
 var allMoves:Array<Move> = ["up", "down", "left", "right"]
+var noMoves:Array<Move> = []
 var me:Snake = payload.you
 var myHead:Point = me.head
 var board:Board = payload.board
@@ -41,7 +42,7 @@ fun getClosestFoodLocations(availableMoves, food, head:Point):Array<Move> = do {
         orderBy $.distance
         then flatten($.moves)
         distinctBy $
-    else []
+    else noMoves
 }
 fun getOtherSnakesHeadLocations(availableMoves, mySnake:Snake, otherSnakes:Array<Snake>):Array<Move> = do {
     var closeSnakes:Array = (otherSnakes map {
@@ -52,10 +53,10 @@ fun getOtherSnakesHeadLocations(availableMoves, mySnake:Snake, otherSnakes:Array
     ---
     closeSnakes match {
         case s if sizeOf(s) >= 1 -> s flatMap (
-            if ($.isSmaller) availableMoves // change this behaviour if you want to be aggressive
+            if ($.isSmaller) noMoves // change this behaviour if you want to be aggressive
             else availableMoves -- (mySnake.head whereIs $.head)
         )
-        else -> []
+        else -> noMoves
     }
 }
 // fun getFutureMovesNumber(newHead:Point, currentBody:Array<Point>):Number = do {
