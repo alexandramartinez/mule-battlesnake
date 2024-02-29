@@ -42,10 +42,9 @@ fun moveTo(point:Point, move:Move):Point = do {
 		else -> point
 	}
 }
-fun distanceTo(point1:Point, point2:Point):Number = do {
+fun distanceTo(point1:Point, point2:Point):Number = 
     abs(point1.x - point2.x) + abs(point1.y - point2.y)
-}
-fun whereIs(point1:Point, point2:Point):Array = do {
+fun whereIs(point1:Point, point2:Point):Array<Move> = do {
 	var xDistance = point1.x - point2.x
     var yDistance = point1.y - point2.y
 	---
@@ -56,9 +55,10 @@ fun whereIs(point1:Point, point2:Point):Array = do {
 		('up') if (yDistance <= -1)
 	]
 }
-fun filterMovesByHeadAndBody(bodyToCheck:Array<Point>, headToMove:Point) = [
-	('down') if (bodyToCheck contains (headToMove moveTo 'down')),
-	('up') if (bodyToCheck contains (headToMove moveTo 'up')),
-	('left') if (bodyToCheck contains (headToMove moveTo 'left')),
-	('right') if (bodyToCheck contains (headToMove moveTo 'right'))
-]
+fun filterMovesByHeadAndBody(bodyToCheck:Array<Point>, headToMove:Point):Array<Move> = 
+	[
+		('down') if (bodyToCheck contains (headToMove moveTo 'down')),
+		('up') if (bodyToCheck contains (headToMove moveTo 'up')),
+		('left') if (bodyToCheck contains (headToMove moveTo 'left')),
+		('right') if (bodyToCheck contains (headToMove moveTo 'right'))
+	]
