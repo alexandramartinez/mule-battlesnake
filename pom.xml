@@ -9,7 +9,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <app.runtime>4.4.0</app.runtime>
+        <app.runtime>4.6.0</app.runtime>
         <mule.maven.plugin.version>3.8.0</mule.maven.plugin.version>
         <!-- Define CH app prefix to be unique before deploying to CH -->
         <cloudhub.app.prefix>amartinez</cloudhub.app.prefix>
@@ -117,12 +117,6 @@
             <artifactId>assertions</artifactId>
             <version>1.0.2</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.mulesoft.services</groupId>
-            <artifactId>mule-service-weave-ee</artifactId>
-            <version>${dataweave.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <!-- not sure if this is expected -->
         <dependency>
