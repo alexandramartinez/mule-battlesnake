@@ -2,7 +2,7 @@ battlesnake:
   config:
     "apiversion": "1"
     "author": "alexandramartinez"
-    "color" : "#6c25be"
-    "head" : "caffeine"
-    "tail" : "nr-booster"
+    "color" : "#FF5500"
+    "head" : "ghost"
+    "tail" : "curled"
     "version" : "0.0.1-beta"

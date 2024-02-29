@@ -56,3 +56,9 @@ fun whereIs(point1:Point, point2:Point):Array = do {
 		('up') if (yDistance <= -1)
 	]
 }
+fun filterMovesByHeadAndBody(bodyToCheck:Array<Point>, headToMove:Point) = [
+	('down') if (bodyToCheck contains (headToMove moveTo 'down')),
+	('up') if (bodyToCheck contains (headToMove moveTo 'up')),
+	('left') if (bodyToCheck contains (headToMove moveTo 'left')),
+	('right') if (bodyToCheck contains (headToMove moveTo 'right'))
+]
