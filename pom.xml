@@ -11,9 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <mule.runtime.version>4.6.0</mule.runtime.version>
-        <!-- <release.channel>LTS</release.channel>
-        <java.version>8</java.version> -->
+        <mule.runtime.version>4.6-java8</mule.runtime.version>
         <mule.maven.plugin.version>4.1.1</mule.maven.plugin.version>
         <!-- Define CH app prefix to be unique before deploying to CH -->
         <cloudhub.app.prefix>amartinez</cloudhub.app.prefix>
