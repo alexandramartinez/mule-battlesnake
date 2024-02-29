@@ -120,16 +120,17 @@
             <version>1.0.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.mulesoft.services</groupId>
+            <artifactId>mule-service-weave-ee</artifactId>
+            <version>${dataweave.version}</version>
+            <scope>runtime</scope>
+        </dependency>
         <!-- not sure if this is expected -->
         <dependency>
             <groupId>org.mule.weave</groupId>
             <artifactId>wlang</artifactId>
             <version>${dataweave.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.everit-org.json-schema</groupId>
-            <artifactId>org.everit.json.schema</artifactId>
-            <version>1.12.2</version>
         </dependency>
     </dependencies>
     <repositories>
