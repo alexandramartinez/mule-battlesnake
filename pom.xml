@@ -5,15 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.prostdev</groupId>
     <artifactId>mule-battlesnake</artifactId>
-    <version>3.0.4</version>
+    <version>3.0.5</version>
     <packaging>mule-application</packaging>
     <name>mule-battlesnake</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <mule.runtime.version>4.6</mule.runtime.version>
-        <release.channel>LTS</release.channel>
-        <java.version>8</java.version>
+        <mule.runtime.version>4.6-lts-java8</mule.runtime.version>
+        <!-- <release.channel>LTS</release.channel>
+        <java.version>8</java.version> -->
         <mule.maven.plugin.version>4.1.1</mule.maven.plugin.version>
         <!-- Define CH app prefix to be unique before deploying to CH -->
         <cloudhub.app.prefix>amartinez</cloudhub.app.prefix>
@@ -41,8 +41,8 @@
                     <cloudHubDeployment>
                         <uri>https://anypoint.mulesoft.com</uri>
                         <muleVersion>${mule.runtime.version}</muleVersion>
-                        <releaseChannel>${release.channel}</releaseChannel>
-                        <javaVersion>${java.version}</javaVersion>
+                        <!-- <releaseChannel>${release.channel}</releaseChannel>
+                        <javaVersion>${java.version}</javaVersion> -->
                         <connectedAppClientId>${client.id}</connectedAppClientId>
                         <connectedAppClientSecret>${client.secret}</connectedAppClientSecret>
                         <connectedAppGrantType>client_credentials</connectedAppGrantType>
