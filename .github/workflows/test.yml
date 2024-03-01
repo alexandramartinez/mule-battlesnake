@@ -2,6 +2,7 @@ name: Test with MUnit
 
 on:
   pull_request:
+    types: [opened, synchronize]
 
 jobs:
   test:
