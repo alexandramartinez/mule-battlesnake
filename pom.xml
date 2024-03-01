@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.prostdev</groupId>
     <artifactId>mule-battlesnake</artifactId>
-    <version>3.0.5</version>
+    <version>3.1.0</version>
     <packaging>mule-application</packaging>
     <name>mule-battlesnake</name>
     <properties>
@@ -40,7 +40,7 @@
                         <uri>https://anypoint.mulesoft.com</uri>
                         <muleVersion>${mule.runtime.version}</muleVersion>
                         <!-- <releaseChannel>${release.channel}</releaseChannel>
-                        <javaVersion>${java.version}</javaVersion> -->
+						<javaVersion>${java.version}</javaVersion> -->
                         <connectedAppClientId>${client.id}</connectedAppClientId>
                         <connectedAppClientSecret>${client.secret}</connectedAppClientSecret>
                         <connectedAppGrantType>client_credentials</connectedAppGrantType>
