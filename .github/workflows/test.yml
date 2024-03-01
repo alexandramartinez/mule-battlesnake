@@ -1,4 +1,4 @@
-name: Build and Deploy to Sandbox
+name: Test with MUnit
 
 on:
   pull_request:
