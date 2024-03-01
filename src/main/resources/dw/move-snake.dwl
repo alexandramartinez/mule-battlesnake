@@ -28,7 +28,7 @@ fun getSafeMoves(myBody:Array<Point>, otherSnakesBodies:Array<Array<Point>>):Arr
     -- getOwnBodyLocations(myBody)
     -- getOtherSnakesBodyLocations(myBody[0], otherSnakesBodies)
 )
-var safeMoves:Array<Move> = getSafeMoves(me.body, otherSnakes.body)
+var safeMoves:Array<Move> = getSafeMoves(me.body, otherSnakes.body default [])
 fun getClosestFoodLocations(availableMoves, food, head:Point):Array<Move> = do {
     var suggestedMoves:Array = food map {
             ($),
