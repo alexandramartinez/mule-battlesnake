@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.prostdev</groupId>
     <artifactId>mule-battlesnake</artifactId>
-    <version>3.1.0</version>
+    <version>3.1.1</version>
     <packaging>mule-application</packaging>
     <name>mule-battlesnake</name>
     <properties>
