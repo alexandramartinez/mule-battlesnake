@@ -75,4 +75,15 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 			<munit-tools:assert-equals doc:name="Assert equals" doc:id="e318d17b-8c9c-4dd7-a656-eec640f5bc70" actual="#[payload.move]" expected="#['left']" />
 		</munit:validation>
 	</munit:test>
+	<munit:test name="battlesnake-scenarios:right-priorities" doc:id="d6435f9a-0678-4257-b3c3-6e3c6c02b765">
+		<munit:execution>
+			<munit:set-event doc:name="Set Event" doc:id="723950a3-2f96-4fbb-99a2-614dbe758232">
+				<munit:payload value="#[output application/json --- readUrl('classpath://standard/right_priorities.json')]" />
+			</munit:set-event>
+			<flow-ref doc:name="execute-dw" doc:id="4fa623e3-4a6f-46e5-8c38-30fac6f73210" name="battlesnake-scenarios:execute-dw" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="e318d17b-8c9c-4dd7-a656-eec640f5bc71" actual="#[payload.move]" expected="#['left']" />
+		</munit:validation>
+	</munit:test>
 </mule>
