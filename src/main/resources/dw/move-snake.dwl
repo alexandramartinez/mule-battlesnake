@@ -100,9 +100,9 @@ var countedMoves = do {
         then getMovesCount(arr3, $)
     ---
     getMovesByPriority(
-        futureMoves,
         otherSnakesHeads,
-        closestFood
+        closestFood,
+        futureMoves
         // [],[]
     )
 }
