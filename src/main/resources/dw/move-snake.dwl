@@ -8,12 +8,20 @@ var noMoves:Array<Move> = []
 var me:Snake = payload.you
 var myHead:Point = me.head
 var board:Board = payload.board
-var food:Array<Point> = board.food
+var food:Points = board.food
 var boardWidth:Number = board.width - 1
 var boardHeight:Number = board.height - 1
 var maxFutureMoves:Number = 8
-var otherSnakes:Array<Snake> = (board.snakes filter ($.id != me.id))
-var otherSnakesBodies:Array<Array<Point>> = otherSnakes.body default []
+var minFutureMoves:Number = maxFutureMoves * 2
+var otherSnakes:Snakes = (board.snakes filter ($.id != me.id))
+var otherSnakesBodies:Array<Points> = otherSnakes.body default []
+
+type MovesCountObj = {
+    up?: Number,
+    down?: Number,
+    left?: Number,
+    right?: Number
+}
 
 fun getWallsLocations(head:Point) = [
     ('down') if head.y == 0,
@@ -21,16 +29,16 @@ fun getWallsLocations(head:Point) = [
     ('left') if head.x == 0,
     ('right') if head.x == boardHeight
 ]
-fun getOwnBodyLocations(body:Array<Point>):Array = filterMovesByHeadAndBody(body, body[0])
-fun getOtherSnakesBodyLocations(myHead:Point, otherSnakesBodies:Array<Array<Point>>):Array = otherSnakesBodies flatMap filterMovesByHeadAndBody($, myHead)
-fun getSafeMoves(myBody:Array<Point>, otherSnakesBodies:Array<Array<Point>>):Array<Move> = (
+fun getOwnBodyLocations(body:Points):Array = filterMovesByHeadAndBody(body, body[0])
+fun getOtherSnakesBodyLocations(myHead:Point, otherSnakesBodies:Array<Points>):Array = otherSnakesBodies flatMap filterMovesByHeadAndBody($, myHead)
+fun getSafeMoves(myBody:Points, otherSnakesBodies:Array<Points>):Array<Move> = (
     allMoves 
     -- getWallsLocations(myBody[0]) 
     -- getOwnBodyLocations(myBody)
     -- getOtherSnakesBodyLocations(myBody[0], otherSnakesBodies)
 )
 var safeMoves:Array<Move> = getSafeMoves(me.body, otherSnakesBodies)
-fun getClosestFoodLocations(availableMoves:Array<Move>, food:Array<Point>, head:Point):Array<Move> = do {
+fun getClosestFoodLocations(availableMoves:Array<Move>, food:Points=food, head:Point=myHead):Array<Move> = do {
     var suggestedMoves:Array = food map {
             ($),
             distance: head distanceTo $,
@@ -45,12 +53,8 @@ fun getClosestFoodLocations(availableMoves:Array<Move>, food:Array<Point>, head:
         distinctBy $
     else noMoves
 }
-fun getOtherSnakesHeadLocations(availableMoves:Array<Move>, mySnake:Snake, otherSnakes:Array<Snake>):Array<Move> = do {
-    var closeSnakes:Array = (otherSnakes map {
-        ($),
-        isClose: (mySnake.head distanceTo $.head) <= 2,
-        isSmaller: $.length < mySnake.length
-    }) filter ($.isClose)
+fun getOtherSnakesHeadLocations(availableMoves:Array<Move>, mySnake:Snake=me, otherSnakes:Snakes=otherSnakes):Array<Move> = do {
+    var closeSnakes:Array = getCloseSnakes(mySnake.head, mySnake.length, otherSnakes)
     ---
     if (isEmpty(closeSnakes)) noMoves
     else closeSnakes flatMap (
@@ -58,13 +62,11 @@ fun getOtherSnakesHeadLocations(availableMoves:Array<Move>, mySnake:Snake, other
         else availableMoves -- (mySnake.head whereIs $.head)
     )
 }
-fun getFutureMovesRec(availableMoves:Array<Move>, myBody:Array<Point>, otherSnakesBodies:Array<Array<Point>>, level:Number=0) = availableMoves map ((move) -> do {
+fun getFutureMovesRec(availableMoves:Array<Move>, myBody:Points=me.body, otherSnakesBodies:Array<Points>=otherSnakesBodies, level:Number=0) = availableMoves map ((move) -> do {
     @Lazy
     var newHead:Point = myBody[0] moveTo move
-    @Lazy
-    var isFood:Boolean = food contains newHead
     @Lazy 
-    var newBody:Array<Point> = if (isFood) (newHead >> myBody) else (newHead >> myBody[0 to -2])
+    var newBody:Points = if (hasFood(newHead,food)) (newHead >> myBody) else (newHead >> myBody[0 to -2])
     @Lazy
     var newSafeMoves:Array<Move> = getSafeMoves(newBody, otherSnakesBodies)
     @Lazy
@@ -77,7 +79,7 @@ fun getFutureMovesRec(availableMoves:Array<Move>, myBody:Array<Point>, otherSnak
         // lookFurther:lookFurther // uncomment to debug Tree
     }
 }) orderBy(-$.size)
-fun getMovesCount(moves:Array<Move>, existingCountedMoves={}):Object = moves reduce (
+fun getMovesCount(moves:Array<Move>, existingCountedMoves={}):MovesCountObj = moves reduce (
     (item, acc=existingCountedMoves) -> 
         if (acc[item] == null) 
             {
@@ -87,28 +89,49 @@ fun getMovesCount(moves:Array<Move>, existingCountedMoves={}):Object = moves red
         else acc update item with (acc[item] + 1)
     ) orderBy -$
 var countedMoves = do {
-    var otherSnakesHeads:Array<Move> = getOtherSnakesHeadLocations(safeMoves, me, otherSnakes)
-    var closestFood:Array<Move> = getClosestFoodLocations(safeMoves, food, myHead)
-    var futureMovesObj = getFutureMovesRec(safeMoves, me.body, otherSnakesBodies)
+    var otherSnakesHeads:Array<Move> = getOtherSnakesHeadLocations(safeMoves)
+    var closestFood:Array<Move> = getClosestFoodLocations(safeMoves)
+    var futureMovesObj = getFutureMovesRec(safeMoves)
     var avgSize = avg(futureMovesObj.size)
     var futureMoves:Array<Move> = (if ((futureMovesObj[0].size - futureMovesObj[-1].size) > avgSize) 
             futureMovesObj filter ($.size > avgSize)
-        else (futureMovesObj filter ($.size > 1))).move default []
-    fun getMovesByPriority(arr1:Array<Move>, arr2:Array<Move>, arr3:Array<Move>) =
+        else (futureMovesObj filter ($.size > minFutureMoves))).move default []
+    fun getMovesByPriority(arr1:Array<Move>, arr2:Array<Move>, arr3:Array<Move>):MovesCountObj =
         getMovesCount(arr1)
         then getMovesCount(arr2, $)
         then getMovesCount(arr3, $)
-    ---
-    getMovesByPriority(
-        futureMoves,
+    var movesByPriorityDraft = getMovesByPriority(
         otherSnakesHeads,
-        closestFood
+        closestFood,
+        futureMoves
         // [],[]
     )
+    ---
+    if (movesByPriorityDraft[0] == movesByPriorityDraft[1])
+        movesByPriorityDraft mapObject ((value, key) -> do {
+            @Lazy
+            var newHead:Point = (myHead moveTo (key as Move))
+            @Lazy
+            var closeBiggerSnakes:Snakes = getCloseSnakes(newHead, me.length, otherSnakes) filter (not $.isSmaller)
+            @Lazy
+            var isBiggerSnakeClose:Boolean = not isEmpty(closeBiggerSnakes)
+            @Lazy 
+            var hasMinFutureMoves:Boolean = ((futureMovesObj filter ($.move ~= key)).size[0]) >= minFutureMoves
+            ---
+            (key): 
+                if (hasMinFutureMoves)
+                    if (isBiggerSnakeClose and hasFood(newHead,food))
+                        value-1
+                    else value
+                else value-1
+        }) orderBy -$
+        then if ($[0] == $[1]) getMovesCount(futureMoves, $) else $
+    else movesByPriorityDraft
 }
 ---
 {
     debug: countedMoves,
+    // debug2: getFutureMovesRec(safeMoves),
     move: keysOf(countedMoves)[0] default safeMoves[0],
     turn: payload.turn
 }
