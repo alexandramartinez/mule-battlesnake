@@ -3,8 +3,8 @@ output application/json
 import update from dw::util::Values
 import * from dw::Common
 
-var allMoves:Array<Move> = ["up", "down", "left", "right"]
-var noMoves:Array<Move> = []
+var allMoves:Moves = ["up", "down", "left", "right"]
+var noMoves:Moves = []
 var me:Snake = payload.you
 var myHead:Point = me.head
 var board:Board = payload.board
@@ -31,14 +31,14 @@ fun getWallsLocations(head:Point) = [
 ]
 fun getOwnBodyLocations(body:Points):Array = filterMovesByHeadAndBody(body, body[0])
 fun getOtherSnakesBodyLocations(myHead:Point, otherSnakesBodies:Array<Points>):Array = otherSnakesBodies flatMap filterMovesByHeadAndBody($, myHead)
-fun getSafeMoves(myBody:Points, otherSnakesBodies:Array<Points>):Array<Move> = (
+fun getSafeMoves(myBody:Points, otherSnakesBodies:Array<Points>):Moves = (
     allMoves 
     -- getWallsLocations(myBody[0]) 
     -- getOwnBodyLocations(myBody)
     -- getOtherSnakesBodyLocations(myBody[0], otherSnakesBodies)
 )
-var safeMoves:Array<Move> = getSafeMoves(me.body, otherSnakesBodies)
-fun getClosestFoodLocations(availableMoves:Array<Move>, food:Points=food, head:Point=myHead):Array<Move> = do {
+var safeMoves:Moves = getSafeMoves(me.body, otherSnakesBodies)
+fun getClosestFoodLocations(availableMoves:Moves, food:Points=food, head:Point=myHead):Moves = do {
     var suggestedMoves:Array = food map {
             ($),
             distance: head distanceTo $,
@@ -53,8 +53,8 @@ fun getClosestFoodLocations(availableMoves:Array<Move>, food:Points=food, head:P
         distinctBy $
     else noMoves
 }
-fun getOtherSnakesHeadLocations(availableMoves:Array<Move>, mySnake:Snake=me, otherSnakes:Snakes=otherSnakes):Array<Move> = do {
-    var closeSnakes:Array = getCloseSnakes(mySnake.head, mySnake.length, otherSnakes)
+fun getOtherSnakesHeadLocations(availableMoves:Moves, mySnake:Snake=me, otherSnakes:Snakes=otherSnakes):Moves = do {
+    var closeSnakes:Snakes = getCloseSnakes(mySnake.head, mySnake.length, otherSnakes)
     ---
     if (isEmpty(closeSnakes)) noMoves
     else closeSnakes flatMap (
@@ -62,13 +62,13 @@ fun getOtherSnakesHeadLocations(availableMoves:Array<Move>, mySnake:Snake=me, ot
         else availableMoves -- (mySnake.head whereIs $.head)
     )
 }
-fun getFutureMovesRec(availableMoves:Array<Move>, myBody:Points=me.body, otherSnakesBodies:Array<Points>=otherSnakesBodies, level:Number=0) = availableMoves map ((move) -> do {
+fun getFutureMovesRec(availableMoves:Moves, myBody:Points=me.body, otherSnakesBodies:Array<Points>=otherSnakesBodies, level:Number=0) = availableMoves map ((move) -> do {
     @Lazy
     var newHead:Point = myBody[0] moveTo move
     @Lazy 
     var newBody:Points = if (hasFood(newHead,food)) (newHead >> myBody) else (newHead >> myBody[0 to -2])
     @Lazy
-    var newSafeMoves:Array<Move> = getSafeMoves(newBody, otherSnakesBodies)
+    var newSafeMoves:Moves = getSafeMoves(newBody, otherSnakesBodies)
     @Lazy
     var lookFurther = if (level == maxFutureMoves) []
         else getFutureMovesRec(newSafeMoves, newBody, otherSnakesBodies, level+1)
@@ -79,7 +79,7 @@ fun getFutureMovesRec(availableMoves:Array<Move>, myBody:Points=me.body, otherSn
         // lookFurther:lookFurther // uncomment to debug Tree
     }
 }) orderBy(-$.size)
-fun getMovesCount(moves:Array<Move>, existingCountedMoves={}):MovesCountObj = moves reduce (
+fun getMovesCount(moves:Moves, existingCountedMoves={}):MovesCountObj = moves reduce (
     (item, acc=existingCountedMoves) -> 
         if (acc[item] == null) 
             {
@@ -89,14 +89,14 @@ fun getMovesCount(moves:Array<Move>, existingCountedMoves={}):MovesCountObj = mo
         else acc update item with (acc[item] + 1)
     ) orderBy -$
 var countedMoves = do {
-    var otherSnakesHeads:Array<Move> = getOtherSnakesHeadLocations(safeMoves)
-    var closestFood:Array<Move> = getClosestFoodLocations(safeMoves)
+    var otherSnakesHeads:Moves = getOtherSnakesHeadLocations(safeMoves)
+    var closestFood:Moves = getClosestFoodLocations(safeMoves)
     var futureMovesObj = getFutureMovesRec(safeMoves)
     var avgSize = avg(futureMovesObj.size)
-    var futureMoves:Array<Move> = (if ((futureMovesObj[0].size - futureMovesObj[-1].size) > avgSize) 
+    var futureMoves:Moves = (if ((futureMovesObj[0].size - futureMovesObj[-1].size) > avgSize) 
             futureMovesObj filter ($.size > avgSize)
         else (futureMovesObj filter ($.size > minFutureMoves))).move default []
-    fun getMovesByPriority(arr1:Array<Move>, arr2:Array<Move>, arr3:Array<Move>):MovesCountObj =
+    fun getMovesByPriority(arr1:Moves, arr2:Moves, arr3:Moves):MovesCountObj =
         getMovesCount(arr1)
         then getMovesCount(arr2, $)
         then getMovesCount(arr3, $)

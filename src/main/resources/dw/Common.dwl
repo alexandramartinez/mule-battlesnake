@@ -19,6 +19,7 @@ type Board = {
     food: Points
 }
 type Move = "up" | "down" | "left" | "right"
+type Moves = Array<Move>
 type ScorePoints = {
     positive: Number,
     negative: Number
@@ -46,7 +47,7 @@ fun moveTo(point:Point, move:Move):Point = do {
 }
 fun distanceTo(point1:Point, point2:Point):Number = 
     abs(point1.x - point2.x) + abs(point1.y - point2.y)
-fun whereIs(point1:Point, point2:Point):Array<Move> = do {
+fun whereIs(point1:Point, point2:Point):Moves = do {
 	var xDistance = point1.x - point2.x
     var yDistance = point1.y - point2.y
 	---
@@ -57,7 +58,7 @@ fun whereIs(point1:Point, point2:Point):Array<Move> = do {
 		('up') if (yDistance <= -1)
 	]
 }
-fun filterMovesByHeadAndBody(bodyToCheck:Points, headToMove:Point):Array<Move> = 
+fun filterMovesByHeadAndBody(bodyToCheck:Points, headToMove:Point):Moves = 
 	[
 		('down') if (bodyToCheck contains (headToMove moveTo 'down')),
 		('up') if (bodyToCheck contains (headToMove moveTo 'up')),
