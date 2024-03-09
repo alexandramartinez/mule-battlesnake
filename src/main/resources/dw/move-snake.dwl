@@ -47,6 +47,8 @@ fun getSafeMoves(body:Points):Moves = do {
     allMoves -- wallsMoves -- allSnakesMoves
 }
 var safeMoves:Moves = getSafeMoves(me.body)
+fun filterOnlySafeMoves(fromMoves:Moves):Moves =
+    fromMoves filter (safeMoves contains $)
 fun getCloseSnakes(myHead:Point=me.head, myLength:Number=me.length):Snakes = otherSnakes map {
         isClose: (myHead distanceTo $.head) <= 2,
         isSmaller: $.length < myLength,
@@ -56,7 +58,7 @@ var closestFoodMoves:Moves = do {
     var suggestedMoves:Array = food map {
             ($),
             distance: me.head distanceTo $,
-            moves: (me.head whereIs $) filter (safeMoves contains $)
+            moves: filterOnlySafeMoves(me.head whereIs $)
         }
         filter (not isEmpty($.moves))
     ---
@@ -71,10 +73,10 @@ var closeSnakesHeadsMoves:Moves = do {
     var closeSnakes:Snakes = getCloseSnakes()
     ---
     if (isEmpty(closeSnakes)) noMoves
-    else closeSnakes flatMap (
+    else filterOnlySafeMoves(closeSnakes flatMap (
         if ($.isSmaller) me.head whereIs $.head //noMoves // change this behaviour if you want to be aggressive
         else safeMoves -- (me.head whereIs $.head)
-    )
+    ))
 }
 fun getFutureMovesRec(availableMoves:Moves=safeMoves, myBody:Points=me.body, level:Number=0):Array<FutureMovesObj> = 
     availableMoves map ((move) -> do {
@@ -138,7 +140,7 @@ var countedMoves = do {
             @Lazy
             var isBiggerSnakeClose:Boolean = not isEmpty(closeBiggerSnakes)
             @Lazy 
-            var hasMinFutureMoves:Boolean = ((futureMovesObjArr filter ($.move ~= key)).size[0]) >= minFutureMoves
+            var hasMinFutureMoves:Boolean = ((futureMovesObjArr filter ($.move ~= key)).size[0] default 0) >= minFutureMoves
             ---
             (key): 
                 if (hasMinFutureMoves)
@@ -154,13 +156,16 @@ var countedMoves = do {
 ---
 {
     //debug only
+
     // safeMoves: safeMoves,
     // closeSnakesHeads: closeSnakesHeadsMoves,
     // closestFood: closestFoodMoves,
     // futureMovesObjArr: futureMovesObjArr,
     // futureMoves: futureMoves,
     // countedMoves: countedMoves,
+
     //needed fields
+
     move: keysOf(countedMoves)[0] default safeMoves[0],
     turn: payload.turn
 }

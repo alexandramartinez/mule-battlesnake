@@ -86,4 +86,19 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 			<munit-tools:assert-equals doc:name="Assert equals" doc:id="e318d17b-8c9c-4dd7-a656-eec640f5bc71" actual="#[payload.move]" expected="#['left']" />
 		</munit:validation>
 	</munit:test>
+	<munit:test name="battlesnake-scenarios:avoid-close-snakes-in-unsafe-locations" doc:id="548a7ed0-52fb-408c-a6fb-c5a71a5dfa33">
+		<munit:execution>
+			<munit:set-event doc:name="Set Event" doc:id="4c3a67ec-93f4-4c9e-91d5-6a86dd2b9703">
+				<munit:payload value="#[output application/json --- readUrl('classpath://standard/avoid_close_snakes_in_unsafe_locations.json', 'application/json')]" />
+			</munit:set-event>
+			<flow-ref doc:name="execute-dw" doc:id="bdd7883e-68ee-4940-992d-9ed64e689b7f" name="battlesnake-scenarios:execute-dw" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert doc:name="Assert expression" doc:id="3d398556-d637-4f09-9772-27571c13d932" >
+				<munit-tools:that ><![CDATA[#[import * from dw::test::Asserts 
+ ---
+payload.move must notBe(equalTo('right'))]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
 </mule>
