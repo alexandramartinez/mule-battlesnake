@@ -12,7 +12,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<munit:test name="battlesnake-scenarios:look-further-into-the-future" doc:id="0f7f1ba3-ab4c-468d-a174-d096cabee9aa">
 		<munit:execution>
 			<munit:set-event doc:name="Set Event" doc:id="5701807c-ac95-4b5c-945f-ff13a237ad2c">
-				<munit:payload value="#[output application/json --- readUrl('classpath://standard/look_further_into_the_future.json')]" />
+				<munit:payload value="#[output application/json --- readUrl('classpath://standard/look_further_into_the_future.json', 'application/json')]" />
 			</munit:set-event>
 			<flow-ref doc:name="execute-dw" doc:id="f521f77a-2df8-426c-857f-f2fac2dca373" name="battlesnake-scenarios:execute-dw" />
 		</munit:execution>
@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<munit:test name="battlesnake-scenarios:make-better-decisions" doc:id="8eda884a-d382-4bdf-9002-a0c336ec146b">
 		<munit:execution>
 			<munit:set-event doc:name="Set Event" doc:id="18584a5e-3845-48fa-863a-730abfa9a064">
-				<munit:payload value="#[output application/json --- readUrl('classpath://standard/make_better_decisions.json')]" />
+				<munit:payload value="#[output application/json --- readUrl('classpath://standard/make_better_decisions.json', 'application/json')]" />
 			</munit:set-event>
 			<flow-ref doc:name="execute-dw" doc:id="8fbae8cf-5b66-4072-8c92-07e343539790" name="battlesnake-scenarios:execute-dw" />
 		</munit:execution>
@@ -34,7 +34,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<munit:test name="battlesnake-scenarios:head-to-head-1-snake-test1" doc:id="1753ac54-118b-457d-8e03-5635685c6ed4">
 		<munit:execution>
 			<munit:set-event doc:name="Set Event" doc:id="c17cc6ec-5bf8-44c4-9703-e2d1a8ee1943">
-				<munit:payload value="#[output application/json --- readUrl('classpath://standard/head_to_head_1_snake-test1.json')]" />
+				<munit:payload value="#[output application/json --- readUrl('classpath://standard/head_to_head_1_snake-test1.json', 'application/json')]" />
 			</munit:set-event>
 			<flow-ref doc:name="execute-dw" doc:id="d9e13006-7979-4f7e-95d2-72befad23e63" name="battlesnake-scenarios:execute-dw" />
 		</munit:execution>
@@ -45,7 +45,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<munit:test name="battlesnake-scenarios:head-to-head-1-snake-test2" doc:id="1453aaee-535a-48fd-aee5-d6bd91695f2b">
 		<munit:execution>
 			<munit:set-event doc:name="Set Event" doc:id="c563f7f2-2c87-476d-9e28-43131cf222f6">
-				<munit:payload value="#[output application/json --- readUrl('classpath://standard/head_to_head_1_snake-test2.json')]" />
+				<munit:payload value="#[output application/json --- readUrl('classpath://standard/head_to_head_1_snake-test2.json', 'application/json')]" />
 			</munit:set-event>
 			<flow-ref doc:name="execute-dw" doc:id="545deef0-99b0-4af7-a448-1286cdb59b6b" name="battlesnake-scenarios:execute-dw" />
 		</munit:execution>
@@ -56,7 +56,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<munit:test name="battlesnake-scenarios:head-to-head-1-snake-test3" doc:id="4712f575-e420-432e-abca-1a467b5deff8">
 		<munit:execution>
 			<munit:set-event doc:name="Set Event" doc:id="b5d3b6d1-19a8-4f39-96dc-ef446e4c69da">
-				<munit:payload value="#[output application/json --- readUrl('classpath://standard/head_to_head_1_snake-test3.json')]" />
+				<munit:payload value="#[output application/json --- readUrl('classpath://standard/head_to_head_1_snake-test3.json', 'application/json')]" />
 			</munit:set-event>
 			<flow-ref doc:name="execute-dw" doc:id="5fc7a094-514a-40e8-b840-cc74b8005039" name="battlesnake-scenarios:execute-dw" />
 		</munit:execution>
@@ -67,7 +67,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<munit:test name="battlesnake-scenarios:aggressiveness" doc:id="d6435f9a-0678-4257-b3c3-6e3c6c02b764">
 		<munit:execution>
 			<munit:set-event doc:name="Set Event" doc:id="723950a3-2f96-4fbb-99a2-614dbe758231">
-				<munit:payload value="#[output application/json --- readUrl('classpath://standard/aggressiveness.json')]" />
+				<munit:payload value="#[output application/json --- readUrl('classpath://standard/aggressiveness.json', 'application/json')]" />
 			</munit:set-event>
 			<flow-ref doc:name="execute-dw" doc:id="4fa623e3-4a6f-46e5-8c38-30fac6f73299" name="battlesnake-scenarios:execute-dw" />
 		</munit:execution>
@@ -78,7 +78,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<munit:test name="battlesnake-scenarios:right-priorities" doc:id="d6435f9a-0678-4257-b3c3-6e3c6c02b765">
 		<munit:execution>
 			<munit:set-event doc:name="Set Event" doc:id="723950a3-2f96-4fbb-99a2-614dbe758232">
-				<munit:payload value="#[output application/json --- readUrl('classpath://standard/right_priorities.json')]" />
+				<munit:payload value="#[output application/json --- readUrl('classpath://standard/right_priorities.json', 'application/json')]" />
 			</munit:set-event>
 			<flow-ref doc:name="execute-dw" doc:id="4fa623e3-4a6f-46e5-8c38-30fac6f73210" name="battlesnake-scenarios:execute-dw" />
 		</munit:execution>

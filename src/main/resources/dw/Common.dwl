@@ -20,10 +20,6 @@ type Board = {
 }
 type Move = "up" | "down" | "left" | "right"
 type Moves = Array<Move>
-type ScorePoints = {
-    positive: Number,
-    negative: Number
-}
 fun moveTo(point:Point, move:Move):Point = do {
     move match {
 		case "down" -> {
@@ -58,19 +54,5 @@ fun whereIs(point1:Point, point2:Point):Moves = do {
 		('up') if (yDistance <= -1)
 	]
 }
-fun filterMovesByHeadAndBody(bodyToCheck:Points, headToMove:Point):Moves = 
-	[
-		('down') if (bodyToCheck contains (headToMove moveTo 'down')),
-		('up') if (bodyToCheck contains (headToMove moveTo 'up')),
-		('left') if (bodyToCheck contains (headToMove moveTo 'left')),
-		('right') if (bodyToCheck contains (headToMove moveTo 'right'))
-	]
-fun isSnakeClose(myHead:Point, otherSnakeHead:Point):Boolean =
-	(myHead distanceTo otherSnakeHead) <= 2
-fun hasFood(myHead:Point, food:Points):Boolean = 
-	food contains myHead
-fun getCloseSnakes(myHead:Point, myLength:Number, otherSnakes:Snakes):Snakes = otherSnakes map {
-	isClose: isSnakeClose(myHead, $.head),
-	isSmaller: $.length < myLength,
-	($)
-} filter ($.isClose)
+fun isFood(point:Point, food:Points):Boolean = 
+	food contains point

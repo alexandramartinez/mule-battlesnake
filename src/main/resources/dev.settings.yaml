@@ -4,5 +4,5 @@ battlesnake:
     "author": "alexandramartinez"
     "color" : "#FF5500"
     "head" : "ghost"
-    "tail" : "curled"
+    "tail" : "leaf"
     "version" : "0.0.1-beta"
