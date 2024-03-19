@@ -124,22 +124,30 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="post:\start:application\json:battlesnake-api-config">
-        <logger level="INFO" message="#['Start Game $(payload.game.id)']" />
-        <logger level="INFO" doc:name="Logger" doc:id="b320da4e-842c-40a6-b021-db4e0247a345" message="#[payload]" />
+        <async>
+            <logger level="INFO" message="#['Start Game $(payload.game.id)']" />
+            <logger level="INFO" doc:name="Logger" doc:id="b320da4e-842c-40a6-b021-db4e0247a345" message="#[payload]" />
+        </async>
     </flow>
     <flow name="post:\move:application\json:battlesnake-api-config" doc:id="0b99858e-58e7-4071-89db-868292f55b18">
-        <logger level="INFO" message="#['Move Game $(payload.game.id) turn $(payload.turn)']" />
-        <logger level="INFO" doc:name="Logger" doc:id="1423365b-9bc2-4e2e-9f28-a85fa84de445" message="#[payload]" />
+        <async>
+            <logger level="INFO" message="#['Move Game $(payload.game.id) turn $(payload.turn)']" />
+            <logger level="INFO" doc:name="Logger" doc:id="1423365b-9bc2-4e2e-9f28-a85fa84de445" message="#[payload]" />
+        </async>
         <ee:transform doc:name="Transform Message" doc:id="54a59f57-b3b2-49c9-9df1-ea5de079e976">
             <ee:message>
                 <ee:set-payload resource="dw/move-snake.dwl" />
             </ee:message>
         </ee:transform>
-        <logger doc:name="Logger" doc:id="ttzcjn" message="#[payload]" />
+        <async>
+            <logger doc:name="Logger" doc:id="ttzcjn" message="#['Move Game $(payload.id) turn $(payload.turn); moving $(payload.move default '')']" />
+        </async>
     </flow>
     <flow name="post:\end:application\json:battlesnake-api-config">
-        <logger level="INFO" message="#['End Game $(payload.game.id)']" />
-        <logger level="INFO" doc:name="Logger" doc:id="e9f0dd37-688a-4c17-9213-f7139eef0e9b" message="#[payload]" />
+        <async>
+            <logger level="INFO" message="#['End Game $(payload.game.id)']" />
+            <logger level="INFO" doc:name="Logger" doc:id="e9f0dd37-688a-4c17-9213-f7139eef0e9b" message="#[payload]" />
+        </async>
     </flow>
 
 </mule>

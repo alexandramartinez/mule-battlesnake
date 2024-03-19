@@ -167,5 +167,6 @@ var countedMoves = do {
     //needed fields
 
     move: keysOf(countedMoves)[0] default safeMoves[0],
-    turn: payload.turn
+    turn: payload.turn,
+    id: payload.game.id
 }
