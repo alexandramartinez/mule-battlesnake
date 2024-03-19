@@ -7,7 +7,7 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<munit:config name="battlesnake-scenarios.xml" />
 	<sub-flow name="battlesnake-scenarios:execute-dw" doc:id="cc4ec027-b294-4a53-b57f-408127dd722f">
-		<flow-ref doc:name="post/move" doc:id="2b0e1c7e-0bed-4bab-b116-1f0c2ce11291" name="post:\move:application\json:battlesnake-api-config" />
+		<flow-ref doc:name="post/move" doc:id="2b0e1c7e-0bed-4bab-b116-1f0c2ce11291" name="move" />
 	</sub-flow>
 	<munit:test name="battlesnake-scenarios:look-further-into-the-future" doc:id="0f7f1ba3-ab4c-468d-a174-d096cabee9aa">
 		<munit:execution>
