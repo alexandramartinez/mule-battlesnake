@@ -130,6 +130,7 @@ var countedMoves = do {
         futureMoves
         // [],[]
     )
+    var futureMovesGrouped = futureMovesObjArr groupBy $.move
     ---
     if (movesByPriorityDraft[0] == movesByPriorityDraft[1])
         movesByPriorityDraft mapObject ((value, key) -> do {
@@ -140,7 +141,7 @@ var countedMoves = do {
             @Lazy
             var isBiggerSnakeClose:Boolean = not isEmpty(closeBiggerSnakes)
             @Lazy 
-            var hasMinFutureMoves:Boolean = ((futureMovesObjArr filter ($.move ~= key)).size[0] default 0) >= minFutureMoves
+            var hasMinFutureMoves:Boolean = ((futureMovesGrouped[key][0]).size default 0) >= minFutureMoves
             ---
             (key): 
                 if (hasMinFutureMoves)
