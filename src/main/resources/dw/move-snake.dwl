@@ -1,15 +1,13 @@
 %dw 2.0
 output application/json
+// import time from dw::util::Timer
 import update from dw::util::Values
 import * from dw::Common
 
-var allMoves:Moves = ["up", "down", "left", "right"]
 var noMoves:Moves = []
 var me:Snake = payload.you
 var board:Board = payload.board
 var food:Points = board.food
-var boardWidth:Number = board.width - 1
-var boardHeight:Number = board.height - 1
 var maxFutureMoves:Number = 8
 var minFutureMoves:Number = maxFutureMoves * 2
 var otherSnakes:Snakes = (board.snakes filter ($.id != me.id))
@@ -29,20 +27,18 @@ type FutureMovesObj = {
 fun getSafeMoves(body:Points):Moves = do {
     var head:Point = body[0]
     var wallsMoves:Moves = [
-        ('down') if head.y == 0,
-        ('up') if head.y == boardWidth,
-        ('left') if head.x == 0,
-        ('right') if head.x == boardHeight
+        (down) if head.y == 0,
+        (up) if head.y == (board.width - 1),
+        (left) if head.x == 0,
+        (right) if head.x == (board.height - 1)
     ]
-    var allSnakesMoves:Moves = (otherSnakesBodies << body) flatMap (
-        //$ distinctBy $ then //FYI - takes longer to do the distinctBy
+    var allSnakesMoves:Moves = flatten(otherSnakesBodies << me.body) distinctBy $ then
         [
-            ('down') if ($ contains (head moveTo 'down')),
-            ('up') if ($ contains (head moveTo 'up')),
-            ('left') if ($ contains (head moveTo 'left')),
-            ('right') if ($ contains (head moveTo 'right'))
+            (down) if ($ contains (head moveTo down)),
+            (up) if ($ contains (head moveTo up)),
+            (left) if ($ contains (head moveTo left)),
+            (right) if ($ contains (head moveTo right))
 	    ]
-    )
     ---
     allMoves -- wallsMoves -- allSnakesMoves
 }
