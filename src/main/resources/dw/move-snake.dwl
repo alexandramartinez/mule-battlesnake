@@ -45,11 +45,11 @@ fun getSafeMoves(body:Points):Moves = do {
 var safeMoves:Moves = getSafeMoves(me.body)
 fun filterOnlySafeMoves(fromMoves:Moves):Moves =
     fromMoves filter (safeMoves contains $)
-fun getCloseSnakes(myHead:Point=me.head, myLength:Number=me.length):Snakes = otherSnakes map {
-        isClose: (myHead distanceTo $.head) <= 2,
+fun getCloseSnakes(myHead:Point=me.head, myLength:Number=me.length):Snakes = 
+    otherSnakes filter ((myHead distanceTo $.head) <= 2) map {
         isSmaller: $.length < myLength,
         ($)
-    } filter ($.isClose)
+    }
 var closestFoodMoves:Moves = do {
     var suggestedMoves:Array = food map {
             ($),
@@ -59,10 +59,8 @@ var closestFoodMoves:Moves = do {
         filter (not isEmpty($.moves))
     ---
     if (not isEmpty(suggestedMoves))
-        suggestedMoves
-        orderBy $.distance
-        then flatten($.moves)
-        distinctBy $
+        suggestedMoves orderBy $.distance
+        then flatten($.moves) distinctBy $
     else noMoves
 }
 var closeSnakesHeadsMoves:Moves = do {
