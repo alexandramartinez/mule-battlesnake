@@ -32,7 +32,7 @@ fun getSafeMoves(body:Points):Moves = do {
         (left) if head.x == 0,
         (right) if head.x == (board.height - 1)
     ]
-    var allSnakesMoves:Moves = flatten(otherSnakesBodies << me.body) distinctBy $ then
+    var allSnakesMoves:Moves = flatten(otherSnakesBodies << body) distinctBy $ then
         [
             (down) if ($ contains (head moveTo down)),
             (up) if ($ contains (head moveTo up)),
