@@ -103,15 +103,17 @@ var futureMoves:Moves = do {
     ).move default []
 }
 fun getMovesCount(moves:Moves, existingCountedMoves={}):MovesCountObj =   
-    if (isEmpty(moves)) existingCountedMoves
+    if (isEmpty(moves)) existingCountedMoves orderBy -$
     else getMovesCount(
         moves[1 to -1], 
         existingCountedMoves update {
             case count at ."$(moves[0])"! -> (count default 0) + 1
-        } orderBy -$
+        }
     )
 var countedMoves = do {
-    var movesByPriorityDraft = getMovesCount(closeSnakesHeadsMoves ++ closestFoodMoves ++ futureMoves)
+    var movesByPriorityDraft = getMovesCount(closeSnakesHeadsMoves) 
+        then getMovesCount(closestFoodMoves, $) 
+        then getMovesCount(futureMoves, $) 
     var futureMovesGrouped = futureMovesObjArr groupBy $.move
     ---
     if (movesByPriorityDraft[0] == movesByPriorityDraft[1])
