@@ -1,7 +1,5 @@
 %dw 2.0
 output application/json
-// import time from dw::util::Timer
-import update from dw::util::Values
 import * from dw::Common
 
 var noMoves:Moves = []
@@ -104,26 +102,16 @@ var futureMoves:Moves = do {
         else (futureMovesObjArr filter ($.size > minFutureMoves))
     ).move default []
 }
-fun getMovesCount(moves:Moves, existingCountedMoves={}):MovesCountObj = moves reduce (
-    (item, acc=existingCountedMoves) -> 
-        if (acc[item] == null) 
-            {
-                (acc),
-                (item): 1
-            }
-        else acc update item with (acc[item] + 1)
-    ) orderBy -$
-var countedMoves = do {
-    fun getMovesByPriority(arr1:Moves, arr2:Moves, arr3:Moves):MovesCountObj =
-        getMovesCount(arr1)
-        then getMovesCount(arr2, $)
-        then getMovesCount(arr3, $)
-    var movesByPriorityDraft = getMovesByPriority(
-        closeSnakesHeadsMoves,
-        closestFoodMoves,
-        futureMoves
-        // [],[]
+fun getMovesCount(moves:Moves, existingCountedMoves={}):MovesCountObj =   
+    if (isEmpty(moves)) existingCountedMoves
+    else getMovesCount(
+        moves[1 to -1], 
+        existingCountedMoves update {
+            case count at ."$(moves[0])"! -> (count default 0) + 1
+        } orderBy -$
     )
+var countedMoves = do {
+    var movesByPriorityDraft = getMovesCount(closeSnakesHeadsMoves ++ closestFoodMoves ++ futureMoves)
     var futureMovesGrouped = futureMovesObjArr groupBy $.move
     ---
     if (movesByPriorityDraft[0] == movesByPriorityDraft[1])
