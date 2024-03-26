@@ -1,5 +1,5 @@
 %dw 2.0
-output application/json
+output application/json indent = false
 import * from dw::Common
 
 var noMoves:Moves = []
