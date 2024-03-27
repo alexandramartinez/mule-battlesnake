@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.prostdev</groupId>
     <artifactId>mule-battlesnake</artifactId>
-    <version>3.2.7</version>
+    <version>3.2.8</version>
     <packaging>mule-application</packaging>
     <name>mule-battlesnake</name>
     <properties>
@@ -125,12 +125,12 @@
             <url>https://repository.mulesoft.org/releases/</url>
             <layout>default</layout>
         </repository>
-        <repository>
+        <!-- <repository>
             <id>Repository</id>
             <name>Private Exchange repository</name>
             <url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${project.groupId}/maven</url>
             <layout>default</layout>
-        </repository>
+        </repository> -->
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -145,7 +145,7 @@
     </pluginRepositories>
     <distributionManagement>
         <repository>
-            <id>Repository</id>
+            <id>anypoint-exchange-v3</id>
             <name>Corporate Repository</name>
             <url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${project.groupId}/maven</url>
             <layout>default</layout>
