@@ -92,14 +92,16 @@ jobs:
         with:
           name: artifacts
 
-      - name: Deploy to Sandbox
-        env:
-          nexus_username: ${{ secrets.anypoint_platform_username }}
-          nexus_password: ${{ secrets.anypoint_platform_password }}
+      - name: Publish to Exchange
+        run: |
+          mvn deploy --settings .maven/settings.xml \
+          -Dclient.id="${{ secrets.CONNECTED_APP_CLIENT_ID }}" \
+          -Dclient.secret="${{ secrets.CONNECTED_APP_CLIENT_SECRET }}"
+
+      - name: Deploy to CloudHub 2.0
         run: |
           artifactName=$(ls *.jar | head -1)
           mvn deploy --settings .maven/settings.xml -DskipMunitTests -DmuleDeploy \
-           -Dmule.artifact=$artifactName \
-           -Dclient.id="${{ secrets.CONNECTED_APP_CLIENT_ID }}" \
-           -Dclient.secret="${{ secrets.CONNECTED_APP_CLIENT_SECRET }}" \
-           -Denv=dev
+          -Dmule.artifact=$artifactName \
+          -Dclient.id="${{ secrets.CONNECTED_APP_CLIENT_ID }}" \
+          -Dclient.secret="${{ secrets.CONNECTED_APP_CLIENT_SECRET }}" 

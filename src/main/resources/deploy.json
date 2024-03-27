@@ -1,0 +1,10 @@
+{
+  "runtime": "4.6.0",
+  "workerSize": 0.1,
+  "applicationName": "mule-battlesnake",
+  "workers": 2,
+  "autoStart": true,
+  "properties": {
+    "env": "dev"
+  }
+}

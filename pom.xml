@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.prostdev</groupId>
     <artifactId>mule-battlesnake</artifactId>
-    <version>3.2.6</version>
+    <version>3.2.7</version>
     <packaging>mule-application</packaging>
     <name>mule-battlesnake</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <mule.runtime.version>4.6-java8</mule.runtime.version>
         <mule.maven.plugin.version>4.1.1</mule.maven.plugin.version>
-        <!-- Define CH app prefix to be unique before deploying to CH -->
-        <cloudhub.app.prefix>amartinez</cloudhub.app.prefix>
-        <region>us-east-1</region>
-        <workers>1</workers>
-        <workerType>MICRO</workerType>
-        <environment>Sandbox</environment>
         <munit.version>3.1.0</munit.version>
         <!-- DataWeave -->
         <dataweave.version>2.6.0</dataweave.version>
@@ -34,26 +29,22 @@
                 <version>${mule.maven.plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <cloudHubDeployment>
+                    <classifier>mule-application</classifier>
+                    <cloudhub2Deployment>
                         <uri>https://anypoint.mulesoft.com</uri>
-                        <muleVersion>${mule.runtime.version}</muleVersion>
-                        <!-- <releaseChannel>${release.channel}</releaseChannel>
-						<javaVersion>${java.version}</javaVersion> -->
+                        <provider>MC</provider>
+                        <environment>Sandbox</environment>
+                        <target>Cloudhub-US-East-1</target>
                         <connectedAppClientId>${client.id}</connectedAppClientId>
                         <connectedAppClientSecret>${client.secret}</connectedAppClientSecret>
                         <connectedAppGrantType>client_credentials</connectedAppGrantType>
-                        <applicationName>${cloudhub.app.prefix}-${project.artifactId}</applicationName>
-                        <environment>${environment}</environment>
-                        <region>${region}</region>
-                        <workers>${workers}</workers>
-                        <workerType>${workerType}</workerType>
-                        <applyLatestRuntimePatch>true</applyLatestRuntimePatch>
-                        <objectStoreV2>true</objectStoreV2>
-                        <properties>
-                            <env>${env}</env>
-                        </properties>
-                    </cloudHubDeployment>
-                    <classifier>mule-application</classifier>
+                        <applicationName>${project.artifactId}</applicationName>
+                        <replicas>2</replicas>
+                        <vCores>0.1</vCores>
+                        <deploymentSettings>
+                            <generateDefaultPublicUrl>true</generateDefaultPublicUrl>
+                        </deploymentSettings>
+                    </cloudhub2Deployment>
                 </configuration>
             </plugin>
             <plugin>
@@ -123,22 +114,28 @@
     </dependencies>
     <repositories>
         <repository>
+            <id>anypoint-exchange-v3</id>
+            <name>Anypoint Exchange</name>
+            <url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
             <id>mulesoft-releases</id>
             <name>MuleSoft Releases Repository</name>
             <url>https://repository.mulesoft.org/releases/</url>
             <layout>default</layout>
         </repository>
         <repository>
-            <id>anypoint-exchange-v3</id>
-            <name>Anypoint Exchange V3</name>
-            <url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
+            <id>Repository</id>
+            <name>Private Exchange repository</name>
+            <url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${project.groupId}/maven</url>
             <layout>default</layout>
         </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>mulesoft-releases</id>
-            <name>MuleSoft Releases Repository</name>
+            <name>mulesoft release repository</name>
             <layout>default</layout>
             <url>https://repository.mulesoft.org/releases/</url>
             <snapshots>
@@ -146,4 +143,12 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+    <distributionManagement>
+        <repository>
+            <id>Repository</id>
+            <name>Corporate Repository</name>
+            <url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${project.groupId}/maven</url>
+            <layout>default</layout>
+        </repository>
+    </distributionManagement>
 </project>
