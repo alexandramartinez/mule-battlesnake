@@ -11,13 +11,11 @@
       <username>${nexus_username}</username>
       <password>${nexus_password}</password>
     </server>
-    <servers>
-      <server>
-        <id>Repository</id>
-        <username>~~~Client~~~</username>
-        <password>${client.id}~?~${client.secret}</password>
-      </server>
-    </servers>
+    <server>
+      <id>Repository</id>
+      <username>~~~Client~~~</username>
+      <password>${client.id}~?~${client.secret}</password>
+    </server>
   </servers>
 
   <profiles>
