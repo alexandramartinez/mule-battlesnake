@@ -13,7 +13,7 @@
     </server>
     <servers>
       <server>
-        <id>anypoint-exchange-v3</id>
+        <id>Repository</id>
         <username>~~~Client~~~</username>
         <password>${client.id}~?~${client.secret}</password>
       </server>

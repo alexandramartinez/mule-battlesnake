@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.prostdev</groupId>
+    <groupId>b903eebf-16e9-46c5-8992-bffd66c2306c</groupId>
     <artifactId>mule-battlesnake</artifactId>
     <version>3.2.8</version>
     <packaging>mule-application</packaging>
@@ -44,6 +44,9 @@
                         <deploymentSettings>
                             <generateDefaultPublicUrl>true</generateDefaultPublicUrl>
                         </deploymentSettings>
+                        <properties>
+                            <env>dev</env>
+                        </properties>
                     </cloudhub2Deployment>
                 </configuration>
             </plugin>
@@ -125,12 +128,12 @@
             <url>https://repository.mulesoft.org/releases/</url>
             <layout>default</layout>
         </repository>
-        <!-- <repository>
+        <repository>
             <id>Repository</id>
             <name>Private Exchange repository</name>
             <url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${project.groupId}/maven</url>
             <layout>default</layout>
-        </repository> -->
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -145,7 +148,7 @@
     </pluginRepositories>
     <distributionManagement>
         <repository>
-            <id>anypoint-exchange-v3</id>
+            <id>Repository</id>
             <name>Corporate Repository</name>
             <url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${project.groupId}/maven</url>
             <layout>default</layout>
