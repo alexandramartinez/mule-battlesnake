@@ -33,8 +33,6 @@ jobs:
 
             - name: Deploy to CloudHub 2.0
               run: |
-                artifactName=$(ls *.jar | head -1)
-                mvn mule:deploy --settings .maven/settings.xml -DskipMunitTests \
-                -Dmule.artifact=$artifactName \
+                mvn deploy --settings .maven/settings.xml -DskipMunitTests -DmuleDeploy \
                 -Dclient.id="${{ secrets.CONNECTED_APP_CLIENT_ID }}" \
                 -Dclient.secret="${{ secrets.CONNECTED_APP_CLIENT_SECRET }}"
