@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>b903eebf-16e9-46c5-8992-bffd66c2306c</groupId>
     <artifactId>mule-battlesnake</artifactId>
-    <version>3.2.27</version>
+    <version>3.2.28</version>
     <packaging>mule-application</packaging>
     <name>mule-battlesnake</name>
     <properties>
@@ -13,6 +13,12 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <mule.maven.plugin.version>4.1.1</mule.maven.plugin.version>
         <munit.version>3.1.0</munit.version>
+        <mule.runtime.version>4.6-java8</mule.runtime.version>
+        <env>Sandbox</env>
+        <region>us-east-1</region>
+        <workers>1</workers>
+        <workerType>MEDIUM</workerType>
+        <cloudhub.app.name>amartinez-mule-battlesnake</cloudhub.app.name>
         <!-- DataWeave -->
         <dataweave.version>2.6.0</dataweave.version>
     </properties>
@@ -29,23 +35,22 @@
                 <version>${mule.maven.plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <classifier>mule-application</classifier>
-                    <cloudhub2Deployment>
+                    <cloudHubDeployment>
                         <uri>https://anypoint.mulesoft.com</uri>
-                        <provider>MC</provider>
-                        <environment>Sandbox</environment>
-                        <target>Cloudhub-US-East-1</target>
+                        <muleVersion>${mule.runtime.version}</muleVersion>
                         <server>Repository</server>
-                        <applicationName>${project.artifactId}</applicationName>
-                        <replicas>1</replicas>
-                        <vCores>0.1</vCores>
-                        <deploymentSettings>
-                            <generateDefaultPublicUrl>true</generateDefaultPublicUrl>
-                        </deploymentSettings>
+                        <applicationName>${cloudhub.app.name}</applicationName>
+                        <environment>${env}</environment>
+                        <workers>${workers}</workers>
+                        <workerType>${workerType}</workerType>
+                        <region>${region}</region>
+                        <objectStoreV2>true</objectStoreV2>
+                        <applyLatestRuntimePatch>true</applyLatestRuntimePatch>
                         <properties>
                             <env>dev</env>
                         </properties>
-                    </cloudhub2Deployment>
+                    </cloudHubDeployment>
+                    <classifier>mule-application</classifier>
                 </configuration>
             </plugin>
             <plugin>
