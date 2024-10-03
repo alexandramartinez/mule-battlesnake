@@ -25,5 +25,5 @@ jobs:
       - name: Test with Maven
         env:
           nexus_username: ${{ secrets.anypoint_platform_username }}
-          nexus_password: ${{ secrets.anypoint_platform_password }}
+          nexus_password: ${{ secrets.NEXUS_PASSWORD }}
         run: mvn test --settings .maven/settings.xml -Dmunit.failIfNoTests=true
